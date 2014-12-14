@@ -35,6 +35,7 @@ gem 'grape'
 
 group :development do
   gem 'annotate' # annotate models
+  gem 'guard-rspec', require: false
 end
 
 group :development, :test do
