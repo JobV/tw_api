@@ -14,10 +14,12 @@ gem 'uglifier', '>= 1.3.0'
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
 gem 'turbolinks'
-# Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
-gem 'jbuilder', '~> 2.0'
 
 gem 'spring',        group: :development
+
+# Build API
+gem 'grape'
+# gem 'hashie_rails' # use in case of mass-assignment problems wth grape
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
