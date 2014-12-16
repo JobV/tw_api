@@ -19,7 +19,7 @@ gem 'spring',        group: :development
 
 # Build API
 gem 'grape'
-# gem 'hashie_rails' # use in case of mass-assignment problems wth grape
+gem 'hashie_rails' # use in case of mass-assignment problems wth grape
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'

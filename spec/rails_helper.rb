@@ -24,6 +24,15 @@ require 'rspec/rails'
 # If you are not using ActiveRecord, you can remove this line.
 ActiveRecord::Migration.maintain_test_schema!
 
+
+module Requests
+  module JsonHelpers
+    def json
+      @json ||= JSON.parse(response.body)
+    end
+  end
+end
+
 RSpec.configure do |config|
   # Remove this line if you're not using ActiveRecord or ActiveRecord fixtures
   config.fixture_path = "#{::Rails.root}/spec/fixtures"
@@ -34,6 +43,8 @@ RSpec.configure do |config|
   config.use_transactional_fixtures = true
 
   config.include FactoryGirl::Syntax::Methods
+  config.include Requests::JsonHelpers, type: :request
+
 
   # additional factory_girl configuration
 

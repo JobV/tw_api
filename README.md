@@ -15,3 +15,19 @@ bundle exec guard
 ```
 
 Leave it open. It will run on changes.
+
+## API
+
+Preprend everything with `/api/v1`
+
+### Users
+
+#### get `/users/:id`
+
+Returns user with :id.
+
+#### get `/users`
+
+Returns all users.
+
+#### post '/users'
