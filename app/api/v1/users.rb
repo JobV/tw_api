@@ -22,8 +22,25 @@ module V1
       end
 
       desc "Create a new user."
+      params do
+        requires :first_name, type: String, desc: "First name."
+        requires :last_name, type: String, desc: "Last name."
+        requires :email, type: String, desc: "Email."
+      end
       post do
         User.create!({
+          first_name: params[:first_name],
+          last_name: params[:last_name],
+          email: params[:email]
+          })
+      end
+
+      desc "Update a user."
+      params do
+        requires :id, type: String, desc: "User id."
+      end
+      put ':id' do
+        User.find(params[:id]).update({
           first_name: params[:first_name],
           last_name: params[:last_name],
           email: params[:email]

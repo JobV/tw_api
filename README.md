@@ -31,3 +31,11 @@ Returns user with :id.
 Returns all users.
 
 #### post '/users'
+
+Creates a user.
+
+Params:
+
+- first_name
+- last_name
+- email
