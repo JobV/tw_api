@@ -16,21 +16,25 @@ bundle exec guard
 
 Leave it open. It will run on changes.
 
+## Location Gems
+
+We use [RGeo](https://github.com/rgeo/rgeo) with the [AR Postgis adapter](https://github.com/rgeo/activerecord-postgis-adapter#creating-spatial-tables).
+
 ## API
 
-Preprend everything with `/api/v1`
+Prepend everything with `/api/v1`
 
 ### Users
 
-#### get `/users/:id`
+#### `get /users/:id`
 
 Returns user with :id.
 
-#### get `/users`
+#### `get /users`
 
 Returns all users.
 
-#### post '/users'
+#### `post /users`
 
 Creates a user.
 
@@ -40,10 +44,10 @@ Params:
 - last_name
 - email
 
-### put '/users/:id'
+### `put /users/:id`
 
 Update a user.
 
-### delete '/users/:id'
+### `delete /users/:id`
 
 Delete a user.

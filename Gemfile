@@ -21,6 +21,9 @@ gem 'spring',        group: :development
 gem 'grape'
 gem 'hashie_rails' # use in case of mass-assignment problems wth grape
 
+# RGeo + Postgis adapter
+gem 'activerecord-postgis-adapter'
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
