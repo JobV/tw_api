@@ -46,6 +46,14 @@ module V1
           email: params[:email]
           })
       end
+
+      desc "Delete a user."
+      params do
+        requires :id, type: String, desc: "User id."
+      end
+      delete ':id' do
+        User.find(params[:id]).destroy!
+      end
     end
   end
 end

@@ -66,3 +66,13 @@ RSpec.describe 'put /api/v1/users/:id', type: :request do
     end
   end
 end
+
+RSpec.describe 'delete /api/v1/users/1', type: :request do
+  context 'given existing user' do
+    it 'deletes the user' do
+      user = create(:user)
+      delete "/api/v1/users/#{user.id}"
+      expect(response.code).to eq '200'
+    end
+  end
+end

@@ -39,3 +39,11 @@ Params:
 - first_name
 - last_name
 - email
+
+### put '/users/:id'
+
+Update a user.
+
+### delete '/users/:id'
+
+Delete a user.
