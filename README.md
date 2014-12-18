@@ -44,10 +44,10 @@ Params:
 - last_name
 - email
 
-### `put /users/:id`
+#### `put /users/:id`
 
 Update a user.
 
-### `delete /users/:id`
+#### `delete /users/:id`
 
 Delete a user.

@@ -11,10 +11,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141214220327) do
+ActiveRecord::Schema.define(version: 20141218201431) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+  enable_extension "postgis"
+
+  create_table "locations", force: true do |t|
+    t.spatial  "longlat",    limit: {:srid=>4326, :type=>"point", :has_z=>true, :has_m=>true, :geographic=>true}
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "locations", ["longlat"], :name => "index_locations_on_longlat", :spatial => true
+  add_index "locations", ["user_id"], :name => "index_locations_on_user_id"
 
   create_table "users", force: true do |t|
     t.string   "first_name"
