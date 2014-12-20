@@ -24,6 +24,24 @@ We use [RGeo](https://github.com/rgeo/rgeo) with the [AR Postgis adapter](https:
 
 Prepend everything with `/api/v1`
 
+### Current User (not implemented yet)
+
+#### `post /location/:x:y:z:m`
+
+Set location x, y, z (optional), m (optional) of current user.
+
+Pre-auth implementation: add param `id` to specify user.
+
+#### `get /location`
+
+Get last stored location of current user.
+
+Pre-auth implementation: add param `id` to specify user.
+
+#### `get /friends`
+
+Get friends of current user.
+
 ### Users
 
 #### `get /users/:id`

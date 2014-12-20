@@ -1,5 +1,5 @@
 module V1
-  class Users < Grape::API
+  class UsersApi < Grape::API
     version 'v1'
     format :json
     prefix :api
