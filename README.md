@@ -20,6 +20,16 @@ Leave it open. It will run on changes.
 
 We use [RGeo](https://github.com/rgeo/rgeo) with the [AR Postgis adapter](https://github.com/rgeo/activerecord-postgis-adapter#creating-spatial-tables).
 
+## API Design guide
+
+Try to make things easy.
+
+Remember to only return useful error messages if authorised.
+Otherwise you're creating security issues.
+
+Test all code. It's a pain in the ass to have untested code around.
+Ruby is too easy to not write untested code.
+
 ## API
 
 Prepend everything with `/api/v1`
