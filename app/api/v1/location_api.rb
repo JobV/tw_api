@@ -22,9 +22,9 @@ module V1
       end
       post do
         user.locations.create!(
-          longlat: "POINT(#{params[:x]},
-                          #{params[:y]},
-                          #{params[:z]},
+          longlat: "POINT(#{params[:x]}
+                          #{params[:y]}
+                          #{params[:z]}
                           #{params[:m]})")
 
       end
