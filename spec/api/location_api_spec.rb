@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'get /api/v1/location', type: :request do
+RSpec.describe 'post /api/v1/location', type: :request do
   let(:user) { create(:user) }
 
   context 'post with all params' do
@@ -47,5 +47,24 @@ RSpec.describe 'get /api/v1/location', type: :request do
     it 'does not create a new location' do
       expect(user.locations.count).to eq 0
     end
+  end
+end
+
+RSpec.describe 'get /api/v1/location', type: :request do
+  let(:user) { create(:user) }
+  before do
+    user.locations.create(
+      longlat:"POINT(52.440723 4.809657 0 0)")
+    get '/api/v1/location', id: user.id
+  end
+
+  it 'returns 200' do
+    expect(response.code).to eq '200'
+  end
+
+  it 'returns the location in json' do
+    json = JSON.parse(response.body)
+    expect(json['x']).to eq 52.440723
+    expect(json['y']).to eq 4.809657
   end
 end

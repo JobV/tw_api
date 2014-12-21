@@ -34,7 +34,7 @@ Ruby is too easy to not write untested code.
 
 Prepend everything with `/api/v1`
 
-### Current User (not implemented yet)
+### Current User
 
 #### `post /location/:x:y:z:m`
 
