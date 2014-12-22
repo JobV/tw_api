@@ -1,4 +1,8 @@
-FactoryGirl.define do
+FactoryGirl.define do  factory :friendship do
+    user_id 1
+friend_id 1
+  end
+
 
   factory :location do
     longlat ""
