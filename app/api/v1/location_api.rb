@@ -5,6 +5,12 @@ module V1
     prefix :api
     rescue_from :all
 
+    before do
+      puts "============="
+      puts params
+      puts "============="
+    end
+
     helpers do
       def user
         User.find(params[:id])
@@ -33,14 +39,16 @@ module V1
       params do
         requires :id, type: Integer, desc: "User id."
       end
-      get do
-        loc = user.locations.last
-        {
-          "x" => loc.longlat.x,
-          "y" => loc.longlat.y,
-          "z" => loc.longlat.z,
-          "m" => loc.longlat.m
-        }
+      route_param :id do
+        get do
+          loc = user.locations.last
+          {
+            "x" => loc.longlat.x,
+            "y" => loc.longlat.y,
+            "z" => loc.longlat.z,
+            "m" => loc.longlat.m
+          }
+        end
       end
     end
   end
