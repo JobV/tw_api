@@ -5,6 +5,13 @@
 1. Develop on Mac OSX Yosemite or later
 1. Use ruby 2.1.5
 1. Use http://postgresapp.com/ for Postgres. It includes Postgis, which we need.
+1. Don't forget to create Postgis extension in your database:
+
+```
+$ psql <database_name>
+CREATE EXTENSION Postgis;
+
+```
 
 ## Tests
 
