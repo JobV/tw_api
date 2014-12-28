@@ -4,18 +4,7 @@ module V1
     format :json
     prefix :api
     rescue_from :all
-
-    before do
-      puts "============="
-      puts params
-      puts "============="
-    end
-
-    helpers do
-      def user
-        User.find(params[:id])
-      end
-    end
+    helpers V1::GrapeHelper
 
     resource :location do
       desc "Set the location of the user."
