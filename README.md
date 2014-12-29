@@ -52,6 +52,16 @@ Pre-auth implementation: add param `id` to specify user.
 
 Get friends of current user.
 
+#### `post /friends`
+
+Creates one or more friends.
+
+Send a single json object or an array.
+
+Params:
+
+- email
+
 ### Users
 
 #### `get /users/:id`
