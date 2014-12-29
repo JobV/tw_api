@@ -16,7 +16,9 @@ module V1
         resource :friends do
           desc "Return all friends"
           get do
-            current_user.friends
+            current_user.friends.select(
+              :first_name,
+              :last_name)
           end
         end
       end
