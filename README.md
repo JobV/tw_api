@@ -54,13 +54,11 @@ Get friends of current user.
 
 #### `post /friends`
 
-Creates one or more friends.
-
-Send a single json object or an array.
+Adds one or more friends.
 
 Params:
 
-- email
+- international phonenr
 
 ### Users
 
