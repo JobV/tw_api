@@ -20,7 +20,8 @@ module V1
               :first_name,
               :last_name,
               :phone_nr,
-              :id)
+              :id,
+              :email)
           end
 
           desc "Add a friend"
