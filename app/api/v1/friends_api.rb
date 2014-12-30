@@ -18,7 +18,10 @@ module V1
           get do
             current_user.friends.select(
               :first_name,
-              :last_name)
+              :last_name,
+              :phone_nr,
+              :id,
+              :email)
           end
 
           desc "Add a friend"

@@ -26,12 +26,14 @@ module V1
         requires :first_name, type: String, desc: "First name."
         requires :last_name, type: String, desc: "Last name."
         requires :email, type: String, desc: "Email."
+        requires :phone_nr, type: String, desc: "Phone nr."
       end
       post do
         User.create!({
           first_name: params[:first_name],
           last_name: params[:last_name],
-          email: params[:email]
+          email: params[:email],
+          phone_nr: params[:phone_nr]
           })
       end
 

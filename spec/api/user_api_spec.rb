@@ -24,7 +24,8 @@ RSpec.describe 'post /api/v1/users', type: :request do
       post '/api/v1/users',
         first_name: 'Luke',
         last_name: 'Skywalker',
-        email: 'luke@theforce.com'
+        email: 'luke@theforce.com',
+        phone_nr: '123123123'
     end
 
     it 'creates a new user' do
