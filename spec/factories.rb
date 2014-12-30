@@ -1,6 +1,7 @@
-FactoryGirl.define do  factory :friendship do
+FactoryGirl.define do
+  factory :friendship do
     user_id 1
-friend_id 1
+    friend_id 1
   end
 
 
@@ -12,5 +13,6 @@ friend_id 1
   factory :user do
     first_name "John"
     last_name  "Doe"
+    sequence(:phone_nr) { |n| "0031#{n}618548" }
   end
 end

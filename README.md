@@ -54,11 +54,17 @@ Get friends of current user.
 
 #### `post /friends`
 
-Adds one or more friends.
+Adds one or more friends by phone_nrs in an array.
 
 Params:
 
-- international phonenr
+- phone_nrs (Array with Strings)
+
+For example:
+
+```
+post /api/v1/users/1/friends?phone_nrs=['12345']
+```
 
 ### Users
 
