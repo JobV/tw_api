@@ -5,5 +5,6 @@ module V1
   class API < Grape::API
     mount V1::LocationApi
     mount V1::UsersApi
+    mount V1::FriendsApi
   end
 end
