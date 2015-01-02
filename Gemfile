@@ -36,6 +36,8 @@ gem 'activerecord-postgis-adapter'
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
+gem 'skylight'
+
 group :development do
   gem 'annotate' # annotate models
   gem 'guard-rspec', require: false
