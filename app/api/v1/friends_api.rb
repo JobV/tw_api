@@ -37,6 +37,9 @@ module V1
                 end
               end
             end
+            {
+              "total_friends_count" => current_user.friends.count
+            }
           end
         end
       end
