@@ -21,7 +21,6 @@ class User < ActiveRecord::Base
   validates :phone_nr, uniqueness: true
 
   def curated_friends_list
-    #current_user.friends.where{"ST_DWithin(longlat, ST_Geographyfromtext('POINT(#{x} #{y})'), 1000)"}
     friends.where{"ST_DWithin(longlat, ST_Geographyfromtext('POINT(#{x} #{y})'), 1000)"}
   end
 end
