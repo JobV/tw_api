@@ -45,9 +45,7 @@ module V1
         resource :curated_friends do
           desc "Return all friends"
           get do
-
-            current_user.friends.where{"ST_DWithin(longlat, ST_Geographyfromtext('POINT(#{x} #{y})'), 1000)"}
-
+            current_user.curated_friends_list
           end
         end
       end
