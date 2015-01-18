@@ -23,4 +23,14 @@ class User < ActiveRecord::Base
   def curated_friends_list
     friends.where{"ST_DWithin(longlat, ST_Geographyfromtext('POINT(#{x} #{y})'), 1000)"}
   end
+
+  def register_interaction_with(other_user)
+    friendships = Friendship.where("user_id=#{id} and friend_id= #{other_user.id} or
+                                  user_id=#{other_user.id} and friend_id= #{id}")
+    friendships.each do |entry|
+      entry.interaction_counter ? entry.interaction_counter += 1 : entry.interaction_counter = 1
+      entry.save
+    end
+  end
+
 end

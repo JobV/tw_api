@@ -33,7 +33,10 @@ module V1
             ActiveRecord::Base.transaction do
               params[:phone_nrs].each do |phone_nr|
                 if u = User.find_by(phone_nr: phone_nr)
-                  current_user.friends << u unless current_user.friends.exists?(u)
+                  if current_user.friends.exists?(u)==false
+                    current_user.friends << u
+                    current_user.register_interaction_with u
+                  end
                 end
               end
             end
