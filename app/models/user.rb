@@ -27,13 +27,14 @@ class User < ActiveRecord::Base
           .limit(10)
   end
 
-  def register_interaction_with(other_user)
-    friendships = Friendship.where("user_id=#{id} and friend_id= #{other_user.id} or
-                                  user_id=#{other_user.id} and friend_id= #{id}")
-    friendships.each do |entry|
-      entry.interaction_counter ? entry.interaction_counter += 1 : entry.interaction_counter = 1
-      entry.save
-    end
+  def increment_interaction_with(other_user)
+    friendship = Friendship.where("user_id=#{id} and friend_id=#{other_user.id}").first
+    friendship.increment!(:interaction_counter)
+  end
+
+  def number_of_interactions_with(other_user)
+    friendship = Friendship.where("user_id=#{id} and friend_id=#{other_user.id}").first
+    friendship.interaction_counter
   end
 
   def current_location

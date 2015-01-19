@@ -22,7 +22,7 @@ ActiveRecord::Schema.define(version: 20150118194752) do
     t.integer  "friend_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "interaction_counter"
+    t.integer  "interaction_counter", default: 0
   end
 
   add_index "friendships", ["user_id", "friend_id"], :name => "index_friendships_on_user_id_and_friend_id", :unique => true
