@@ -35,7 +35,7 @@ module V1
                 if u = User.find_by(phone_nr: phone_nr)
                   if current_user.friends.exists?(u)==false
                     current_user.friends << u
-                    current_user.register_interaction_with u
+                    current_user.increment_interaction_with u
                   end
                 end
               end

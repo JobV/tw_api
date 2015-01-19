@@ -37,7 +37,9 @@ RSpec.describe 'post /api/v1/users/:id/friends', type: :request do
     end
 
     it 'returns 201' do
+      puts response.body
       expect(response.code).to eq '201'
+
     end
 
     it 'adds a friend to the user' do
