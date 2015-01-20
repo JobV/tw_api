@@ -19,4 +19,25 @@ class User < ActiveRecord::Base
   has_many :inverse_friends, through: :inverse_friendships, source: :user
 
   validates :phone_nr, uniqueness: true
+
+  def curated_friends_list
+    friends.joins(:locations)
+          .where("ST_DWithin(longlat, ST_Geographyfromtext('#{current_location.longlat}'), 300000)")
+          .order("friendships.interaction_counter DESC")
+          .limit(10)
+  end
+
+  def increment_interaction_with(other_user)
+    friendship = Friendship.where("user_id=#{id} and friend_id=#{other_user.id}").first
+    friendship.increment!(:interaction_counter)
+  end
+
+  def number_of_interactions_with(other_user)
+    friendship = Friendship.where("user_id=#{id} and friend_id=#{other_user.id}").first
+    friendship.interaction_counter
+  end
+
+  def current_location
+    locations.last
+  end
 end

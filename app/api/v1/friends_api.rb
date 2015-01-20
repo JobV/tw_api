@@ -42,6 +42,12 @@ module V1
             }
           end
         end
+        resource :curated_friends do
+          desc "Return all friends"
+          get do
+            current_user.curated_friends_list
+          end
+        end
       end
     end
   end
