@@ -14,20 +14,20 @@
 require 'rails_helper'
 
 RSpec.describe User, :type => :model do
-  context 'interaction incrementations' do
+
+  context 'interactions' do
     let(:user) { create(:user) }
     let(:friend) { create(:user) }
 
     it 'returns 0 as the number of interactions between two new friends' do
-      user.friends<<friend
+      user.friends << friend
       expect(user.number_of_interactions_with(friend)).to eq(0)
     end
 
-    it 'increments interaction by one point' do
-      user.friends<<friend
-      expect{user.increment_interaction_with(friend)}.to change{user.number_of_interactions_with(friend)}.from(0).to(1)
+    it 'increment counter by one point' do
+      user.friends << friend
+      expect{ user.increment_interaction_with(friend) }.to change{ user.number_of_interactions_with(friend) }.from(0).to(1)
     end
-
   end
 
   context 'curated list of friends' do
