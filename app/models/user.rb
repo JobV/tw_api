@@ -42,10 +42,10 @@ class User < ActiveRecord::Base
   end
 
   def request_meetup_with(other_user)
-    meetup_req = MeetupRequest.create
+    meetup_req = MeetupRequest.new
     meetup_req.friendship = Friendship.where(user_id: id, friend_id: other_user.id).first
     meetup_req.pending!
-    meetup_req.save!
+    meetup_req.save
   end
 
   def meetup_requests
