@@ -7,11 +7,19 @@
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
 
-5.times do |i|
-  user = User.new
-  user.first_name = "Joe #{i}"
-  user.last_name = "Doe #{i}"
-  user.email = "joe#{i}doe@mail.com"
-  user.phone_nr = "#{i}#{i}#{i}"
-  user.save
-end
+  marcelo = User.new
+  marcelo.first_name = "Marcelo"
+  marcelo.last_name = "Lebre"
+  marcelo.email = "marcelo.lebre@gmail.com"
+  marcelo.phone_nr = "+351913226179"
+  marcelo.save
+
+  job = User.new
+  job.first_name = "Job"
+  job.last_name = "van der Voort"
+  job.email = "jobvandervoort@gmail.com"
+  job.phone_nr = "+31622618548"
+  job.save
+
+  marcelo.friends << job
+  job.friends << marcelo
