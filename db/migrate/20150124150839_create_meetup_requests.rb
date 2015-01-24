@@ -6,5 +6,6 @@ class CreateMeetupRequests < ActiveRecord::Migration
 
       t.timestamps
     end
+    add_index :meetup_requests, :friendship_id
   end
 end

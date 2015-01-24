@@ -44,6 +44,8 @@ ActiveRecord::Schema.define(version: 20150124150839) do
     t.datetime "updated_at"
   end
 
+  add_index "meetup_requests", ["friendship_id"], :name => "index_meetup_requests_on_friendship_id"
+
   create_table "users", force: true do |t|
     t.string   "first_name"
     t.string   "last_name"

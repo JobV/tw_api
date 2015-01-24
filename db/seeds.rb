@@ -24,4 +24,6 @@
   marcelo.friends << job
   job.friends << marcelo
 
-  MeetupRequest.create(friendship_id:1,status:1)
+  MeetupRequest.create(friendship_id: 1, status: 0)
+  MeetupRequest.create(friendship_id: 1, status: 1)
+  MeetupRequest.create(friendship_id: 1, status: 2)

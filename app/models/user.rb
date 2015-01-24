@@ -44,7 +44,15 @@ class User < ActiveRecord::Base
   def request_meetup_with(other_user)
     meetup_req = MeetupRequest.new
     meetup_req.friendship = Friendship.where(user_id: id, friend_id: other_user.id).first
-    puts meetup_req.friendship.inspect
-    meetup_req.save!
+    meetup_req.save
   end
+
+  def meetup_requests
+    MeetupRequest.joins(:friendship).where(friendships: { friend_id: id }, status: 0)
+  end
+
+  def meetup_history
+    MeetupRequest.joins(:friendship).where(friendships: { friend_id: id })
+  end
+
 end
