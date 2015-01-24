@@ -48,8 +48,12 @@ class User < ActiveRecord::Base
     meetup_req.save
   end
 
-  def meetup_requests
+  def pending_meetup_requests_received
     MeetupRequest.joins(:friendship).where(friendships: { friend_id: id }, status: 0)
+  end
+
+  def pending_meetup_requests_sent
+    MeetupRequest.joins(:friendship).where(friendships: { user_id: id }, status: 0)
   end
 
   def meetup_history
