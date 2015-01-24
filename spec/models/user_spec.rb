@@ -64,4 +64,20 @@ RSpec.describe User, :type => :model do
       expect(user.curated_friends_list.first.first_name).to eq("nearby_friend1")
     end
   end
+
+  context 'receiving meetup requests' do
+    let(:user) { create(:user) }
+    let(:friend) { create(:user) }
+
+    before do
+      user.friends << friend
+      friendship = Friendship.last
+      meet = MeetupRequest.create!(friendship_id: friendship.id, status: 0)
+    end
+
+    it 'adds entry to meetup requests list' do
+      expect(friend.meetup_requests.count).to eq(1)
+    end
+
+  end
 end

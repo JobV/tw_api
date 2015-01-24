@@ -39,7 +39,7 @@ ActiveRecord::Schema.define(version: 20150124150839) do
 
   create_table "meetup_requests", force: true do |t|
     t.integer  "friendship_id"
-    t.integer  "status"
+    t.integer  "status",        default: 0
     t.datetime "created_at"
     t.datetime "updated_at"
   end
