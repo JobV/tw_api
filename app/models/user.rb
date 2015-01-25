@@ -49,15 +49,26 @@ class User < ActiveRecord::Base
   end
 
   def pending_meetup_requests_received
-    MeetupRequest.joins(:friendship).where(friendships: { friend_id: id }, status: 0)
+    meetups = MeetupRequest.joins(:friendship).where(friendships: { friend_id: id }, status: 0)
+    return meetups_response_format_for(meetups)
   end
 
   def pending_meetup_requests_sent
-    MeetupRequest.joins(:friendship).where(friendships: { user_id: id }, status: 0)
+    meetups = MeetupRequest.joins(:friendship).where(friendships: { user_id: id }, status: 0)
+    return meetups_response_format_for(meetups)
   end
 
   def meetup_history
-    MeetupRequest.joins(:friendship).where(friendships: { friend_id: id })
+    meetups = MeetupRequest.joins(:friendship).where(friendships: { friend_id: id })
+    return meetups_response_format_for(meetups)
   end
 
+  private
+    def meetups_response_format_for(meetups)
+      array=[]
+      meetups.each { |meetup|
+        array << [friend_id: meetup.friendship.friend_id, meetup_id: meetup.id ]
+      }
+      return array
+    end
 end

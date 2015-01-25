@@ -75,8 +75,12 @@ RSpec.describe User, :type => :model do
       meet = MeetupRequest.create!(friendship_id: friendship.id, status: 0)
     end
 
-    it 'adds entry to meetup requests list' do
-      expect(friend.meetup_requests.count).to eq(1)
+    it 'adds entry to pending meetup requests received list' do
+      expect(friend.pending_meetup_requests_received.count).to eq(1)
+    end
+
+    it 'adds entry to pending meetup requests sent list' do
+      expect(user.pending_meetup_requests_sent.count).to eq(1)
     end
 
   end
