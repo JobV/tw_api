@@ -6,5 +6,6 @@ module V1
     mount V1::LocationApi
     mount V1::UsersApi
     mount V1::FriendsApi
+    mount V1::MeetupApi
   end
 end

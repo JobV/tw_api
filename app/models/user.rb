@@ -40,4 +40,35 @@ class User < ActiveRecord::Base
   def current_location
     locations.last
   end
+
+  def request_meetup_with(other_user)
+    meetup_req = MeetupRequest.new
+    meetup_req.friendship = Friendship.where(user_id: id, friend_id: other_user.id).first
+    meetup_req.pending!
+    meetup_req.save
+  end
+
+  def pending_meetup_requests_received
+    meetups = MeetupRequest.joins(:friendship).where(friendships: { friend_id: id }, status: 0)
+    return meetups_response_format_for(meetups)
+  end
+
+  def pending_meetup_requests_sent
+    meetups = MeetupRequest.joins(:friendship).where(friendships: { user_id: id }, status: 0)
+    return meetups_response_format_for(meetups)
+  end
+
+  def meetup_history
+    meetups = MeetupRequest.joins(:friendship).where(friendships: { friend_id: id })
+    return meetups_response_format_for(meetups)
+  end
+
+  private
+    def meetups_response_format_for(meetups)
+      array=[]
+      meetups.each { |meetup|
+        array << [friend_id: meetup.friendship.friend_id, meetup_id: meetup.id, created_date: meetup.created_at ]
+      }
+      return array
+    end
 end

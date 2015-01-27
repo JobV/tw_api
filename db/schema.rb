@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150118194752) do
+ActiveRecord::Schema.define(version: 20150124150839) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -36,6 +36,15 @@ ActiveRecord::Schema.define(version: 20150118194752) do
 
   add_index "locations", ["longlat"], :name => "index_locations_on_longlat", :spatial => true
   add_index "locations", ["user_id"], :name => "index_locations_on_user_id"
+
+  create_table "meetup_requests", force: true do |t|
+    t.integer  "friendship_id"
+    t.integer  "status",        default: 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "meetup_requests", ["friendship_id"], :name => "index_meetup_requests_on_friendship_id"
 
   create_table "users", force: true do |t|
     t.string   "first_name"
