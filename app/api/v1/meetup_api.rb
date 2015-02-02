@@ -21,6 +21,13 @@ module V1
             }
           end
 
+          desc "Return sent pending meetups"
+          get do
+            {
+              "sent" => current_user.pending_meetup_requests_sent
+            }
+          end
+
           desc "Creating a meetup"
           params do
             requires :friend_id, type: Integer, desc: "User id."
