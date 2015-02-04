@@ -4,12 +4,7 @@ module V1
     format :json
     prefix :api
     rescue_from :all
-
-    helpers do
-      def current_user
-        User.find(params[:id])
-      end
-    end
+    helpers V1::GrapeHelper
 
     resource :users do
       route_param :id do
@@ -17,7 +12,7 @@ module V1
           desc "Return received pending meetups"
           get do
             {
-              "received" => current_user.pending_meetup_requests_received
+              "received" => user.pending_meetup_requests_received
             }
           end
 
@@ -27,7 +22,7 @@ module V1
           end
           post do
             if friend = User.find(params[:friend_id])
-              meetup = current_user.request_meetup_with(friend) if current_user.friends.exists?(friend)
+              meetup = user.request_meetup_with(friend) if user.friends.exists?(friend)
             end
             {
               "success" => meetup
