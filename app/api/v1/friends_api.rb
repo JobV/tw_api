@@ -27,9 +27,8 @@ module V1
             # Do in a single transaction for minor speed boost.
             ActiveRecord::Base.transaction do
               params[:phone_nrs].each do |phone_nr|
-                if u = User.find_by(phone_nr: phone_nr)
-                  user.friends << u unless user.friends.exists?(u)
-                end
+                u = User.find_by(phone_nr: phone_nr)
+                user.friends << u if u && !user.friends.exists?(u)
               end
             end
             {

@@ -10,6 +10,6 @@
 #
 
 class MeetupRequest < ActiveRecord::Base
-  belongs_to :friendship, :inverse_of => :meetup_requests
-  enum status: [ :pending, :accepted, :declined ]
+  belongs_to :friendship, inverse_of: :meetup_requests
+  enum status: [:pending, :accepted, :declined]
 end

@@ -22,9 +22,9 @@ class User < ActiveRecord::Base
 
   def curated_friends_list
     friends.joins(:locations)
-          .where("ST_DWithin(longlat, ST_Geographyfromtext('#{current_location.longlat}'), 300000)")
-          .order("friendships.interaction_counter DESC")
-          .limit(10)
+      .where("ST_DWithin(longlat, ST_Geographyfromtext('#{current_location.longlat}'), 300000)")
+      .order("friendships.interaction_counter DESC")
+      .limit(10)
   end
 
   def increment_interaction_with(user)
@@ -66,15 +66,16 @@ class User < ActiveRecord::Base
   end
 
   private
-    def meetups_response_format_for(meetups)
-      array = []
-      meetups.each do |meetup|
-        array << [friend_id: meetup.friendship.user_id, meetup_id: meetup.id, created_date: meetup.created_at ]
-      end
-      array
-    end
 
-    def friendship_with(user)
-      friendships.find_by(friend: user.id)
+  def meetups_response_format_for(meetups)
+    array = []
+    meetups.each do |meetup|
+      array << [friend_id: meetup.friendship.user_id, meetup_id: meetup.id, created_date: meetup.created_at]
     end
+    array
+  end
+
+  def friendship_with(user)
+    friendships.find_by(friend: user.id)
+  end
 end

@@ -21,9 +21,8 @@ module V1
             requires :friend_id, type: Integer, desc: "User id."
           end
           post do
-            if friend = User.find(params[:friend_id])
-              meetup = user.request_meetup_with(friend) if user.friends.exists?(friend)
-            end
+            friend = User.find(params[:friend_id])
+            meetup = user.request_meetup_with(friend) if friend && user.friends.exists?(friend)
             {
               "success" => meetup
             }
