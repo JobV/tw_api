@@ -41,6 +41,7 @@ gem 'skylight'
 group :development do
   gem 'annotate' # annotate models
   gem 'guard-rspec', require: false
+  gem 'guard-rubocop', require: false
 end
 
 group :development, :test do

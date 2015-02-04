@@ -89,6 +89,9 @@ GEM
       guard (~> 2.1)
       guard-compat (~> 1.1)
       rspec (>= 2.99.0, < 4.0)
+    guard-rubocop (1.2.0)
+      guard (~> 2.0)
+      rubocop (~> 0.20)
     hashie (3.3.2)
     hashie_rails (0.0.1)
       hashie (>= 3.0)
@@ -226,6 +229,7 @@ DEPENDENCIES
   factory_girl_rails (~> 4.0)
   grape
   guard-rspec
+  guard-rubocop
   hashie_rails
   jquery-rails
   pg
