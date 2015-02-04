@@ -67,10 +67,10 @@ class User < ActiveRecord::Base
 
   private
     def meetups_response_format_for(meetups)
-      array=[]
-      meetups.each { |meetup|
+      array = []
+      meetups.each do |meetup|
         array << [friend_id: meetup.friendship.user_id, meetup_id: meetup.id, created_date: meetup.created_at ]
-      }
+      end
       array
     end
 
