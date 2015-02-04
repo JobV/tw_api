@@ -27,40 +27,42 @@ class User < ActiveRecord::Base
           .limit(10)
   end
 
-  def increment_interaction_with(other_user)
-    friendship = Friendship.where("user_id=#{id} and friend_id=#{other_user.id}").first
-    friendship.increment!(:interaction_counter)
+  def increment_interaction_with(user)
+    friendship_with(user).increment!(:interaction_counter)
   end
 
-  def number_of_interactions_with(other_user)
-    friendship = Friendship.where("user_id=#{id} and friend_id=#{other_user.id}").first
-    friendship.interaction_counter
+  def number_of_interactions_with(user)
+    friendship_with(user).interaction_counter
   end
 
   def current_location
     locations.last
   end
 
-  def request_meetup_with(other_user)
+  # TODO: Move this to a controller
+  def request_meetup_with(user)
     meetup_req = MeetupRequest.new
-    meetup_req.friendship = Friendship.where(user_id: id, friend_id: other_user.id).first
+    meetup_req.friendship = friendship_with(user)
     meetup_req.pending!
     meetup_req.save
   end
 
+  # TODO: Move this to a controller
   def pending_meetup_requests_received
     meetups = MeetupRequest.joins(:friendship).where(friendships: { friend_id: id }, status: 0)
-    return meetups_response_format_for(meetups)
+    meetups_response_format_for(meetups)
   end
 
+  # TODO: Move this to a controller
   def pending_meetup_requests_sent
     meetups = MeetupRequest.joins(:friendship).where(friendships: { user_id: id }, status: 0)
-    return meetups_response_format_for(meetups)
+    meetups_response_format_for(meetups)
   end
 
+  # TODO: Move this to a controller
   def meetup_history
     meetups = MeetupRequest.joins(:friendship).where(friendships: { friend_id: id })
-    return meetups_response_format_for(meetups)
+    meetups_response_format_for(meetups)
   end
 
   private
@@ -69,6 +71,10 @@ class User < ActiveRecord::Base
       meetups.each { |meetup|
         array << [friend_id: meetup.friendship.user_id, meetup_id: meetup.id, created_date: meetup.created_at ]
       }
-      return array
+      array
+    end
+
+    def friendship_with(user)
+      friendships.find_by(friend: user.id)
     end
 end
