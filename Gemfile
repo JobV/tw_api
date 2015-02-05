@@ -1,6 +1,5 @@
 source 'https://rubygems.org'
 
-
 gem 'rails', '4.1.8'
 gem 'pg'
 gem 'sass-rails', '~> 4.0.3'
@@ -41,10 +40,12 @@ gem 'skylight'
 group :development do
   gem 'annotate' # annotate models
   gem 'guard-rspec', require: false
+  gem 'guard-rubocop', require: false
 end
 
 group :development, :test do
   gem 'rspec-rails'
   gem 'database_cleaner'
   gem "factory_girl_rails", "~> 4.0"
+  gem 'rubocop', require: false
 end
