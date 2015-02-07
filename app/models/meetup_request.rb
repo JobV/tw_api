@@ -11,5 +11,7 @@
 
 class MeetupRequest < ActiveRecord::Base
   belongs_to :friendship, inverse_of: :meetup_requests
+  belongs_to :user
+  belongs_to :friend, class_name: 'User'
   enum status: [:pending, :accepted, :declined]
 end

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'get /api/v1/users/:id/meetup', type: :request do
+RSpec.describe 'get /api/v1/users/:id/meetups', type: :request do
   context 'get pending meetups' do
     let(:user)   { create(:user) }
     let(:friend) { create(:user, first_name: 'Rudolph') }
@@ -27,32 +27,36 @@ RSpec.describe 'get /api/v1/users/:id/meetup', type: :request do
   end
 end
 
-RSpec.describe 'post /api/v1/users/:id/meetup', type: :request do
+RSpec.describe 'post /api/v1/users/:id/meetups', type: :request do
   let(:user)   { create(:user) }
   let(:friend) { create(:user, first_name: 'Rudolph') }
 
-
-
-  context 'create meetup with friend' do
-    before do
-      user.friends << friend
-      post "/api/v1/users/#{user.id}/meetups",
-      friend_id: friend.id
-    end
-
-    it 'returns 201' do
-      expect(response.code).to eq '201'
-    end
-
-    it 'returns 1 result' do
-      expect(json.length).to eq 1
-
-    end
-
-    it 'returns success when valid relationship' do
-      expect(json['success']).to eq true
-    end
-
+  context 'create meetup with non-friend' do
+    before { post "/api/v1/users/#{user.id}/meetups", friend_id: friend.id }
+    specify { expect(user.friends.count).to eq 0 }
+    specify { expect(response.code).to eq '403' }
   end
 
+  context 'request meetup with friend' do
+    before do
+      user.friends << friend
+      post "/api/v1/users/#{user.id}/meetups", friend_id: friend.id
+    end
+
+    specify { expect(response.code).to eq '201' }
+    specify { expect(MeetupRequest.last.status).to eq 'pending' }
+    specify { expect(MeetupRequest.last.friend).to eq friend }
+    specify { expect(MeetupRequest.last.user).to eq user }
+  end
+
+  context 'accept meetup with friend' do
+    before do
+      user.friends << friend
+      MeetupRequest.create user_id: friend.id, friend_id: user.id
+      post "/api/v1/users/#{user.id}/meetups", friend_id: friend.id
+    end
+
+    specify { expect(response.code).to eq '201' }
+    specify { expect(MeetupRequest.last.status).to eq 'accepted' }
+  end
 end
