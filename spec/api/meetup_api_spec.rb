@@ -21,9 +21,7 @@ RSpec.describe 'get /api/v1/users/:id/meetups', type: :request do
       it 'returns meetup id' do
       puts json
       end
-
     end
-
   end
 end
 
@@ -48,12 +46,18 @@ RSpec.describe 'post /api/v1/users/:id/meetups', type: :request do
     specify { expect(MeetupRequest.last.friend).to eq friend }
     specify { expect(MeetupRequest.last.user).to eq user }
   end
+end
+
+RSpec.describe 'post /api/v1/users/:id/meetups/accept', type: :request do
+  let(:user)   { create(:user) }
+  let(:friend) { create(:user, first_name: 'Rudolph') }
 
   context 'accept meetup with friend' do
     before do
       user.friends << friend
       MeetupRequest.create user_id: friend.id, friend_id: user.id
-      post "/api/v1/users/#{user.id}/meetups", friend_id: friend.id
+      post "/api/v1/users/#{user.id}/meetups/accept",
+        friend_id: friend.id
     end
 
     specify { expect(response.code).to eq '201' }

@@ -22,32 +22,38 @@ module V1
             }
           end
 
-          desc "Request or Accept a meetup"
+          desc "Request a meetup"
           params do
             requires :friend_id, type: Integer, desc: "Friend id."
           end
           post do
+            friendship = Friendship.find_by(user: user, friend_id: params[:friend_id])
+            if friendship
+              # If friends, create meetup request
+              MeetupRequest.create(
+                user: user,
+                friend_id: params[:friend_id],
+                friendship: friendship)
+            else
+              error! 'Access Denied', 403
+            end
+          end
+
+          desc "Accept a meetup"
+          params do
+            requires :friend_id, type: Integer, desc: "Friend id."
+          end
+          post '/accept' do
             meetup = MeetupRequest.find_by(
-              user: user,
-              friend_id: params[:friend_id],
+              user_id: params[:friend_id],
+              friend_id: user.id,
               created_at: (Time.now - 1.hour)..Time.now)
 
             if meetup
-              # If exists, accept
-              meetup.status = accepted
-              meetup.save
+              meetup.status = 'accepted'
+              error! 'Access Denied', 403 unless meetup.save
             else
-              # If not, check if friendship exists
-              friendship = Friendship.find_by(user: user, friend_id: params[:friend_id])
-              if friendship
-                # If friends, create meetup request
-                MeetupRequest.create(
-                  user: user,
-                  friend_id: params[:friend_id],
-                  friendship: friendship)
-              else
-                error! 'Access Denied', 403
-              end
+              error! 'Access Denied', 404
             end
           end
         end
