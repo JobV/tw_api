@@ -17,10 +17,6 @@ RSpec.describe 'get /api/v1/users/:id/meetups', type: :request do
       it 'returns 1 result' do
         expect(json.length).to eq 1
       end
-
-      it 'returns meetup id' do
-      puts json
-      end
     end
   end
 end
@@ -56,8 +52,7 @@ RSpec.describe 'post /api/v1/users/:id/meetups/accept', type: :request do
     before do
       user.friends << friend
       MeetupRequest.create user_id: friend.id, friend_id: user.id
-      post "/api/v1/users/#{user.id}/meetups/accept",
-        friend_id: friend.id
+      post "/api/v1/users/#{user.id}/meetups/accept", friend_id: friend.id
     end
 
     specify { expect(response.code).to eq '201' }
@@ -72,8 +67,7 @@ RSpec.describe 'post /api/v1/users/:id/meetups/accept', type: :request do
         friend_id: user.id,
         created_at: Time.now - 1.day
       )
-      post "/api/v1/users/#{user.id}/meetups/accept",
-        friend_id: friend.id
+      post "/api/v1/users/#{user.id}/meetups/accept", friend_id: friend.id
     end
 
     specify { expect(response.code).to eq '404' }
@@ -81,7 +75,6 @@ RSpec.describe 'post /api/v1/users/:id/meetups/accept', type: :request do
 
   context 'accept non existing meetup request' do
     before { post "/api/v1/users/#{user.id}/meetups/accept", friend_id: 32 }
-
     specify { expect(response.code).to eq '404' }
   end
 end

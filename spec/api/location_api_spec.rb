@@ -5,12 +5,10 @@ RSpec.describe 'post /api/v1/users/:id/location', type: :request do
 
   context 'post with all params' do
     before do
-      post "/api/v1/users/#{user.id}/location",
-      x: '52.440723',
-      y: '4.809657',
-      z: '0',
-      m: '0'
-      #id: "#{user.id}"
+      post "/api/v1/users/#{user.id}/location", x: '52.440723',
+                                                y: '4.809657',
+                                                z: '0',
+                                                m: '0'
     end
 
     it 'returns 201' do
@@ -32,8 +30,7 @@ RSpec.describe 'post /api/v1/users/:id/location', type: :request do
 
   context 'post with too little params' do
     before do
-      post "/api/v1/users/#{user.id}/location",
-      x: "11"
+      post "/api/v1/users/#{user.id}/location", x: "11"
     end
 
     it 'returns 500' do
@@ -54,8 +51,7 @@ RSpec.describe 'get /api/v1/users/:id/location', type: :request do
   let(:user) { create(:user) }
   before do
     user.locations.create(
-    longlat:"POINT(52.440723 4.809657 0 0)")
-    #get '/api/v1/location', id: user.id
+    longlat: "POINT(52.440723 4.809657 0 0)")
     get "/api/v1/users/#{user.id}/location"
   end
 

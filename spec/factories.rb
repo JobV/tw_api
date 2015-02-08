@@ -1,5 +1,4 @@
 FactoryGirl.define do
-
   factory :meetup_request do
     friendship_id 1
     status 1
@@ -10,7 +9,6 @@ FactoryGirl.define do
     friend_id 2
   end
 
-
   factory :location do
     longlat ""
     user_id 1
@@ -18,8 +16,7 @@ FactoryGirl.define do
 
   factory :user do
     first_name "John"
-    last_name  "Doe"
+    last_name "Doe"
     sequence(:phone_nr) { |n| "0031#{n}618548" }
   end
-
 end

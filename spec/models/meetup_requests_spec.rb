@@ -11,6 +11,5 @@
 
 require 'rails_helper'
 
-RSpec.describe MeetupRequest, :type => :model do
-
+RSpec.describe MeetupRequest, type: :model do
 end
