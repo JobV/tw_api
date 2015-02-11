@@ -19,4 +19,10 @@ FactoryGirl.define do
     last_name "Doe"
     sequence(:phone_nr) { |n| "0031#{n}618548" }
   end
+
+  factory :device do
+    sequence(:token) { |n| "123456789#{n}" }
+    name "iPhone"
+    os "iOS 8.1.3"
+  end
 end

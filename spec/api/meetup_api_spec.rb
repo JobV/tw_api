@@ -24,6 +24,7 @@ end
 RSpec.describe 'post /api/v1/users/:id/meetups', type: :request do
   let(:user)   { create(:user) }
   let(:friend) { create(:user, first_name: 'Rudolph') }
+  let(:device) { create(:device) }
 
   context 'create meetup with non-friend' do
     before { post "/api/v1/users/#{user.id}/meetups", friend_id: friend.id }
@@ -34,9 +35,9 @@ RSpec.describe 'post /api/v1/users/:id/meetups', type: :request do
   context 'request meetup with friend' do
     before do
       user.friends << friend
+      friend.devices << device
       post "/api/v1/users/#{user.id}/meetups", friend_id: friend.id
     end
-
     specify { expect(response.code).to eq '201' }
     specify { expect(MeetupRequest.last.status).to eq 'pending' }
     specify { expect(MeetupRequest.last.friend).to eq friend }

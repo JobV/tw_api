@@ -5,16 +5,15 @@ module V1
     end
 
     def create_meetup(friendship)
-      meetup = MeetupRequest.create( user_id: friendship.user_id,
-                                     friend_id: friendship.friend_id,
-                                     friendship: friendship)
+      meetup = MeetupRequest.create user_id: friendship.user_id,
+                                    friend_id: friendship.friend_id,
+                                    friendship: friendship
       notify_friend(friendship.friend_id) if meetup
       meetup
     end
 
     def notify_friend(friend_id)
       friend = User.find(friend_id)
-      device = friend.devices.last
       send_meetup_notification_to(friend)
     end
   end

@@ -30,7 +30,7 @@ module V1
           post do
             friendship = Friendship.find_by(user: user, friend_id: params[:friend_id].to_i)
             if friendship
-               create_meetup(friendship)
+              create_meetup(friendship)
             else
               error! 'Access Denied', 403
             end
