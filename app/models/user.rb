@@ -78,5 +78,4 @@ class User < ActiveRecord::Base
   def friendship_with(user)
     friendships.find_by(friend: user.id)
   end
-  
 end
