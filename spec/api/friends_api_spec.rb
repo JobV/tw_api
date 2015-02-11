@@ -48,8 +48,7 @@ RSpec.describe 'post /api/v1/users/:id/friends', type: :request do
 
   context 'add multiple friends that exist' do
     before do
-      post "/api/v1/users/#{user.id}/friends",
-      phone_nrs: [friend.phone_nr,friend2.phone_nr,friend3.phone_nr]
+      post "/api/v1/users/#{user.id}/friends", phone_nrs: [friend.phone_nr, friend2.phone_nr, friend3.phone_nr]
     end
 
     it 'returns 201' do
@@ -63,8 +62,7 @@ RSpec.describe 'post /api/v1/users/:id/friends', type: :request do
 
   context 'add some friends that exist and others that dont' do
     before do
-      post "/api/v1/users/#{user.id}/friends",
-      phone_nrs: [friend.phone_nr,friend2.phone_nr,'0000123']
+      post "/api/v1/users/#{user.id}/friends", phone_nrs: [friend.phone_nr, friend2.phone_nr, '0000123']
     end
 
     it 'returns 201' do
