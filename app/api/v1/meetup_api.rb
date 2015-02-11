@@ -30,16 +30,7 @@ module V1
           post do
             friendship = Friendship.find_by(user: user, friend_id: params[:friend_id].to_i)
             if friendship
-              # If friends, create meetup request
-              meetup = MeetupRequest.create(
-                user: user,
-                friend_id: params[:friend_id].to_i,
-                friendship: friendship)
-                if meetup
-                  friend = User.find(params[:friend_id].to_i)
-                  send_meetup_notification_to(friend)
-                end
-                meetup
+               create_meetup(friendship)
             else
               error! 'Access Denied', 403
             end
