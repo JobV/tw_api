@@ -4,19 +4,14 @@ module V1
     format :json
     prefix :api
     rescue_from :all
-
-    helpers do
-      def current_user
-        User.find(params[:id])
-      end
-    end
+    helpers V1::GrapeHelper
 
     resource :users do
       route_param :id do
         resource :friends do
           desc "Return all friends"
           get do
-            current_user.friends.select(
+            user.friends.select(
               :first_name,
               :last_name,
               :phone_nr,
@@ -32,20 +27,19 @@ module V1
             # Do in a single transaction for minor speed boost.
             ActiveRecord::Base.transaction do
               params[:phone_nrs].each do |phone_nr|
-                if u = User.find_by(phone_nr: phone_nr)
-                  current_user.friends << u unless current_user.friends.exists?(u)
-                end
+                u = User.find_by(phone_nr: phone_nr)
+                user.friends << u if u && !user.friends.exists?(u)
               end
             end
             {
-              "total_friends_count" => current_user.friends.count
+              "total_friends_count" => user.friends.count
             }
           end
         end
         resource :curated_friends do
           desc "Return all friends"
           get do
-            current_user.curated_friends_list
+            user.curated_friends_list
           end
         end
       end

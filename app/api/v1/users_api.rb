@@ -29,12 +29,12 @@ module V1
         requires :phone_nr, type: String, desc: "Phone nr."
       end
       post do
-        User.create!({
+        User.create!(
           first_name: params[:first_name],
           last_name: params[:last_name],
           email: params[:email],
           phone_nr: params[:phone_nr]
-          })
+          )
       end
 
       desc "Update a user."
@@ -42,11 +42,11 @@ module V1
         requires :id, type: String, desc: "User id."
       end
       put ':id' do
-        User.find(params[:id]).update({
+        User.find(params[:id]).update(
           first_name: params[:first_name],
           last_name: params[:last_name],
           email: params[:email]
-          })
+          )
       end
 
       desc "Delete a user."
