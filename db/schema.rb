@@ -11,11 +11,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150207073457) do
+ActiveRecord::Schema.define(version: 20150211221752) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "postgis"
+
+  create_table "devices", force: true do |t|
+    t.string  "token"
+    t.string  "name"
+    t.string  "os"
+    t.integer "user_id"
+  end
+
+  add_index "devices", ["token"], :name => "index_devices_on_token"
+  add_index "devices", ["user_id"], :name => "index_devices_on_user_id"
 
   create_table "friendships", force: true do |t|
     t.integer  "user_id"
