@@ -15,7 +15,7 @@ module V1
     resource :users do
       route_param :id do
         resource :meetups do
-          desc "Return received pending meetups"
+          desc "Return pending meetups"
           get do
             {
               "received" => user.pending_meetup_requests_received
