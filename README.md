@@ -100,3 +100,15 @@ Update a user.
 #### `delete /users/:id`
 
 Delete a user.
+
+### Meetups
+
+#### `get /users/:id/meetups`
+
+Returns all pending meetups.
+
+#### `post /users/:id/meetups/:friend_id`
+
+Request a meetup if none is outstanding.
+
+Accept a meetup if one is outstanding.

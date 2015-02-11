@@ -39,7 +39,10 @@ class User < ActiveRecord::Base
     locations.last
   end
 
-  # TODO: Move this to a controller
+  def friends_with?(friend)
+    friends.exists?(friend)
+  end
+
   def request_meetup_with(user)
     meetup_req = MeetupRequest.new
     meetup_req.friendship = friendship_with(user)
@@ -47,19 +50,16 @@ class User < ActiveRecord::Base
     meetup_req.save
   end
 
-  # TODO: Move this to a controller
   def pending_meetup_requests_received
     meetups = MeetupRequest.joins(:friendship).where(friendships: { friend_id: id }, status: 0)
     meetups_response_format_for(meetups)
   end
 
-  # TODO: Move this to a controller
   def pending_meetup_requests_sent
     meetups = MeetupRequest.joins(:friendship).where(friendships: { user_id: id }, status: 0)
     meetups_response_format_for(meetups)
   end
 
-  # TODO: Move this to a controller
   def meetup_history
     meetups = MeetupRequest.joins(:friendship).where(friendships: { friend_id: id })
     meetups_response_format_for(meetups)

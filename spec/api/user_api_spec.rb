@@ -21,11 +21,10 @@ end
 RSpec.describe 'post /api/v1/users', type: :request do
   context 'given all parameters' do
     before do
-      post '/api/v1/users',
-        first_name: 'Luke',
-        last_name: 'Skywalker',
-        email: 'luke@theforce.com',
-        phone_nr: '123123123'
+      post '/api/v1/users', first_name: 'Luke',
+                            last_name: 'Skywalker',
+                            email: 'luke@theforce.com',
+                            phone_nr: '123123123'
     end
 
     it 'creates a new user' do
@@ -48,9 +47,9 @@ end
 RSpec.describe 'put /api/v1/users/:id', type: :request do
   context 'given all parameters' do
     let(:user) { create(:user) }
+
     before do
-      put "/api/v1/users/#{user.id}",
-      first_name: 'Anakin'
+      put "/api/v1/users/#{user.id}", first_name: 'Anakin'
     end
 
     it 'creates updates the user' do
