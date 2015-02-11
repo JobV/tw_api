@@ -25,6 +25,8 @@ ActiveRecord::Schema.define(version: 20150207073457) do
     t.integer  "interaction_counter", default: 0
   end
 
+  add_index "friendships", ["user_id", "friend_id"], :name => "index_friendships_on_user_id_and_friend_id", :unique => true
+
   create_table "locations", force: true do |t|
     t.spatial  "longlat",    limit: {:srid=>4326, :type=>"point", :has_z=>true, :has_m=>true, :geographic=>true}
     t.integer  "user_id"
