@@ -11,11 +11,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150207073457) do
+ActiveRecord::Schema.define(version: 20150211221752) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "postgis"
+
+  create_table "devices", force: true do |t|
+    t.string  "token"
+    t.string  "name"
+    t.string  "os"
+    t.integer "user_id"
+  end
+
+  add_index "devices", ["token"], :name => "index_devices_on_token"
+  add_index "devices", ["user_id"], :name => "index_devices_on_user_id"
 
   create_table "friendships", force: true do |t|
     t.integer  "user_id"
@@ -24,6 +34,8 @@ ActiveRecord::Schema.define(version: 20150207073457) do
     t.datetime "updated_at"
     t.integer  "interaction_counter", default: 0
   end
+
+  add_index "friendships", ["user_id", "friend_id"], :name => "index_friendships_on_user_id_and_friend_id", :unique => true
 
   create_table "locations", force: true do |t|
     t.spatial  "longlat",    limit: {:srid=>4326, :type=>"point", :has_z=>true, :has_m=>true, :geographic=>true}

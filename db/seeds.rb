@@ -24,6 +24,13 @@
   marcelo.friends << job
   job.friends << marcelo
 
+  device = Device.new
+  device.token = "0fe216f7debd370fef94b032378d0ee938259fb154df1786bfcc7bdd8ca4b079"
+  device.name = "iPhone"
+  device.os = "iOS 8.1.3"
+
+  marcelo.devices << device
+
   MeetupRequest.create(friendship_id: 1, status: 0)
   MeetupRequest.create(friendship_id: 1, status: 1)
   MeetupRequest.create(friendship_id: 1, status: 2)

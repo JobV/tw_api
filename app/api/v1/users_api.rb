@@ -1,5 +1,7 @@
 module V1
   class UsersApi < Grape::API
+    helpers ApnsHelper
+
     version 'v1'
     format :json
     prefix :api

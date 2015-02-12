@@ -78,6 +78,7 @@ GEM
       rack-accept
       rack-mount
       virtus (>= 1.0.0)
+    grocer (0.6.0)
     guard (2.10.2)
       formatador (>= 0.2.4)
       listen (~> 2.7)
@@ -228,6 +229,7 @@ DEPENDENCIES
   database_cleaner
   factory_girl_rails (~> 4.0)
   grape
+  grocer
   guard-rspec
   guard-rubocop
   hashie_rails

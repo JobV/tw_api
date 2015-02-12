@@ -41,7 +41,7 @@ RSpec.describe User, type: :model do
       end
       10.times do |i|
         friend = create(:user, first_name: "faraway_friend#{i}")
-        friend.locations.create!(longlat: "POINT(40.923341 -9.231600)")
+        friend.locations.create!(longlat: "POINT(60.923341 -9.231600)")
         user.friends << friend
       end
     end

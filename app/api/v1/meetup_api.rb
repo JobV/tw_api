@@ -11,6 +11,7 @@ module V1
     prefix :api
     rescue_from :all
     helpers V1::GrapeHelper
+    helpers ApnsHelper
 
     resource :users do
       route_param :id do
@@ -27,13 +28,9 @@ module V1
             requires :friend_id, type: Integer, desc: "Friend id."
           end
           post do
-            friendship = Friendship.find_by(user: user, friend_id: params[:friend_id])
+            friendship = Friendship.find_by(user: user, friend_id: params[:friend_id].to_i)
             if friendship
-              # If friends, create meetup request
-              MeetupRequest.create(
-                user: user,
-                friend_id: params[:friend_id],
-                friendship: friendship)
+              create_meetup(friendship)
             else
               error! 'Access Denied', 403
             end

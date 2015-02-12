@@ -37,6 +37,8 @@ gem 'activerecord-postgis-adapter'
 
 gem 'skylight'
 
+gem 'grocer'
+
 group :development do
   gem 'annotate' # annotate models
   gem 'guard-rspec', require: false
