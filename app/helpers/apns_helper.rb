@@ -7,21 +7,21 @@ module ApnsHelper
     )
   end
 
-  def generate_notification_for(device, message)
+  def generate_notification_for(device, message, friend_id)
     Grocer::Notification.new(
       device_token:      device.token,
       alert:             message,
       badge:             1,
       category:          "meetup",
       identifier:        1,
-      custom:            {"friend_id": 77},
+      custom:            {"friend_id": friend_id},
       expiry:            Time.now + 60 * 60    # optional; 0 is default, meaning the message is not stored
     )
   end
 
   def push_notification(device)
     message = "#{user.first_name} wants to meet!"
-    notification = generate_notification_for device, message
+    notification = generate_notification_for device, message, user.id
     pusher.push(notification)
   end
 

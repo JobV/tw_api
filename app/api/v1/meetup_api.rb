@@ -45,7 +45,7 @@ module V1
               user_id: params[:friend_id],
               friend_id: user.id,
               created_at: (Time.now - 1.hour)..Time.now)
-
+              
             if meetup
               meetup.status = 'accepted'
               error! 'Access Denied', 403 unless meetup.save
