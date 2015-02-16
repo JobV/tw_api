@@ -41,11 +41,11 @@ module V1
             requires :friend_id, type: Integer, desc: "Friend id."
           end
           post '/accept' do
-            meetup = MeetupRequest.find_by(
+            meetup = MeetupRequest.where(
               user_id: params[:friend_id],
               friend_id: user.id,
-              created_at: (Time.now - 1.hour)..Time.now)
-              
+              created_at: (Time.now - 1.hour)..Time.now).last
+
             if meetup
               meetup.status = 'accepted'
               error! 'Access Denied', 403 unless meetup.save
