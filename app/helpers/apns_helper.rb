@@ -14,7 +14,7 @@ module ApnsHelper
       badge:             1,
       category:          "meetup",
       identifier:        1,
-      custom:            {"friend_id": friend_id},
+      custom:            {"friend_id" => friend_id},
       expiry:            Time.now + 60 * 60    # optional; 0 is default, meaning the message is not stored
     )
   end
