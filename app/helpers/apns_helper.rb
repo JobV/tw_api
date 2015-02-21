@@ -22,8 +22,14 @@ module ApnsHelper
     )
   end
 
+  def push_declined_notification(device)
+    message = "#{device.user.first_name} denied to meetup!"
+    notification = generate_notification_for device, message, user.id, 3
+    pusher.push(notification)
+  end
+
   def push_accepted_notification(device)
-    message = "#{device.user.first_name} accepted the notification!"
+    message = "#{device.user.first_name} accepted to meetup!"
     notification = generate_notification_for device, message, user.id, 2
     pusher.push(notification)
   end
@@ -43,5 +49,10 @@ module ApnsHelper
     device = user.devices.last
     push_accepted_notification(device) if device
   end
-  
+
+  def send_refusal_notification_to(user)
+    device = user.devices.last
+    push_declined_notification(device) if device
+  end
+
 end

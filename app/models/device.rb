@@ -1,3 +1,3 @@
 class Device < ActiveRecord::Base
-  belongs_to :user, :inverse_of => :device
+  belongs_to :user, :inverse_of => :devices
 end
