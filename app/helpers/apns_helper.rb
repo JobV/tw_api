@@ -22,8 +22,14 @@ module ApnsHelper
     )
   end
 
+  def push_accepted_notification(device)
+    message = "#{device.user.first_name} accepted the notification!"
+    notification = generate_notification_for device, message, user.id, 2
+    pusher.push(notification)
+  end
+
   def push_request_notification(device)
-    message = "#{user.first_name} wants to meet!"
+    message = "#{device.user.first_name} wants to meet!"
     notification = generate_notification_for device, message, user.id, 1
     pusher.push(notification)
   end
@@ -32,4 +38,10 @@ module ApnsHelper
     device = user.devices.last
     push_request_notification(device) if device
   end
+
+  def send_acceptance_notification_to(user)
+    device = user.devices.last
+    push_accepted_notification(device) if device
+  end
+  
 end
