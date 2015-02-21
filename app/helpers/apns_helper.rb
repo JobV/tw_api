@@ -6,11 +6,10 @@ module ApnsHelper
       gateway:     "gateway.sandbox.push.apple.com"
     )
   end
-
-# Identifier Codes
-# 1 - received meetup
-# 2 - meetup accepted
-# 3 - meetup declined
+  # Identifier Codes
+  # 1 - received meetup
+  # 2 - meetup accepted
+  # 3 - meetup declined
   def generate_notification_for(device, message, friend_id, identifier)
     Grocer::Notification.new(
       device_token:      device.token,
@@ -33,6 +32,4 @@ module ApnsHelper
     device = user.devices.last
     push_request_notification(device) if device
   end
-
-
 end
