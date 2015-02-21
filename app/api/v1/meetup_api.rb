@@ -53,6 +53,24 @@ module V1
               error! 'Access Denied', 404
             end
           end
+
+          desc "Decline a meetup"
+          params do
+            requires :friend_id, type: Integer, desc: "Friend id."
+          end
+          post '/decline' do
+            meetup = MeetupRequest.where(
+              user_id: params[:friend_id],
+              friend_id: user.id,
+              created_at: (Time.now - 1.hour)..Time.now).last
+
+            if meetup
+              meetup.status = 'declined'
+              error! 'Access Denied', 403 unless meetup.save
+            else
+              error! 'Access Denied', 404
+            end
+          end
         end
       end
     end
