@@ -50,7 +50,6 @@ module V1
               meetup.status = 'accepted'
               if meetup.save
                 notify_acceptance(params[:friend_id].to_i)
-
               else
                 error! 'Access Denied', 403
               end
