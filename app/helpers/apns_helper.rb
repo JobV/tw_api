@@ -7,26 +7,33 @@ module ApnsHelper
     )
   end
 
-  def generate_notification_for(device, message, friend_id)
+# Identifier Codes
+# 1 - received meetup
+# 2 - meetup accepted
+# 3 - meetup declined
+
+  def generate_notification_for(device, message, friend_id, identifier)
     Grocer::Notification.new(
       device_token:      device.token,
       alert:             message,
       badge:             1,
       category:          "meetup",
-      identifier:        1,
+      identifier:        identifier,
       custom:            { "friend_id" => friend_id },
       expiry:            1.hour    # optional; 0 is default, meaning the message is not stored
     )
   end
 
-  def push_notification(device)
+  def push_request_notification(device)
     message = "#{user.first_name} wants to meet!"
-    notification = generate_notification_for device, message, user.id
+    notification = generate_notification_for device, message, user.id, 1
     pusher.push(notification)
   end
 
   def send_meetup_notification_to(user)
     device = user.devices.last
-    push_notification(device) if device
+    push_request_notification(device) if device
   end
+
+
 end
