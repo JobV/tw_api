@@ -21,5 +21,10 @@ module V1
       friend = User.find(friend_id)
       send_acceptance_notification_to(friend)
     end
+
+    def notify_refusal(friend_id)
+      friend = User.find(friend_id)
+      send_refusal_notification_to(friend)
+    end
   end
 end
