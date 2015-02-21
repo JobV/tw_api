@@ -16,5 +16,10 @@ module V1
       friend = User.find(friend_id)
       send_meetup_notification_to(friend)
     end
+
+    def notify_acceptance(friend_id)
+      friend = User.find(friend_id)
+      send_acceptance_notification_to(friend)
+    end
   end
 end
