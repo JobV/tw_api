@@ -11,7 +11,6 @@ module ApnsHelper
 # 1 - received meetup
 # 2 - meetup accepted
 # 3 - meetup declined
-
   def generate_notification_for(device, message, friend_id, identifier)
     Grocer::Notification.new(
       device_token:      device.token,
