@@ -54,5 +54,4 @@ module ApnsHelper
     device = user.devices.last
     push_declined_notification(device) if device
   end
-
 end
