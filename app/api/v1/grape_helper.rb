@@ -12,6 +12,15 @@ module V1
       meetup
     end
 
+    def get_status_with_friend(user_id, friend_id)
+      meetup = MeetupRequest.where(user_id: user_id, friend_id: friend_id).last
+      if meetup
+        meetup.status != "terminated" ? meetup.status : "ready"
+      else
+        "ready"
+      end
+    end
+
     def notify_friend(friend_id, sender_id)
       friend = User.find(friend_id)
       sender = User.find(sender_id)

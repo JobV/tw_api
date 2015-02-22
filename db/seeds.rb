@@ -31,6 +31,6 @@
 
   marcelo.devices << device
 
-  MeetupRequest.create(friendship_id: 1, status: 0)
-  MeetupRequest.create(friendship_id: 1, status: 1)
-  MeetupRequest.create(friendship_id: 1, status: 2)
+  # MeetupRequest.create(friendship_id: 1, status: 0)
+  # MeetupRequest.create(friendship_id: 1, status: 1)
+  # MeetupRequest.create(friendship_id: 1, status: 2)

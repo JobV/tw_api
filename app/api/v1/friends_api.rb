@@ -11,12 +11,24 @@ module V1
         resource :friends do
           desc "Return all friends"
           get do
-            user.friends.select(
+            friends = user.friends.select(
               :first_name,
               :last_name,
               :phone_nr,
               :id,
               :email)
+              returning_friends = []
+              friends.each do |friend|
+                returning_friends << {
+                  "first_name" => friend.first_name,
+                  "last_name" => friend.last_name,
+                  "phone_nr" => friend.phone_nr,
+                  "id" => friend.id,
+                  "email" => friend.email,
+                  "status_with_friend" => get_status_with_friend(user.id, friend.id)
+                }
+              end
+              returning_friends
           end
 
           desc "Add a friend"
