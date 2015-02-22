@@ -79,3 +79,38 @@ RSpec.describe 'post /api/v1/users/:id/meetups/accept', type: :request do
     specify { expect(response.code).to eq '404' }
   end
 end
+
+RSpec.describe 'post /api/v1/users/:id/meetups/decline', type: :request do
+  let(:user)   { create(:user) }
+  let(:friend) { create(:user, first_name: 'Rudolph') }
+
+  context 'decline most recent meetup request with friend' do
+    before do
+      user.friends << friend
+      MeetupRequest.create user_id: friend.id, friend_id: user.id
+      post "/api/v1/users/#{user.id}/meetups/decline", friend_id: friend.id
+    end
+
+    specify { expect(response.code).to eq '201' }
+    specify { expect(MeetupRequest.last.status).to eq 'declined' }
+  end
+
+  context 'decline old meetup request with friend' do
+    before do
+      user.friends << friend
+      MeetupRequest.create(
+        user_id: friend.id,
+        friend_id: user.id,
+        created_at: Time.now - 1.day
+      )
+      post "/api/v1/users/#{user.id}/meetups/decline", friend_id: friend.id
+    end
+
+    specify { expect(response.code).to eq '404' }
+  end
+
+  context 'decline non existing meetup request' do
+    before { post "/api/v1/users/#{user.id}/meetups/decline", friend_id: 32 }
+    specify { expect(response.code).to eq '404' }
+  end
+end
