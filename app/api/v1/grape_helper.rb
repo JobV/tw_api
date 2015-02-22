@@ -15,7 +15,11 @@ module V1
     def get_status_with_friend(user_id, friend_id)
       meetup = MeetupRequest.where(user_id: user_id, friend_id: friend_id).last
       if meetup
-        meetup.status != "terminated" ? meetup.status : "ready"
+        if meetup.status == "terminated" || meetup.status == "declined"
+          "ready"
+        else
+          meetup.status
+        end
       else
         "ready"
       end
@@ -37,6 +41,12 @@ module V1
       friend = User.find(friend_id)
       sender = User.find(sender_id)
       send_refusal_notification_to(friend, sender)
+    end
+
+    def notify_termination(friend_id, sender_id)
+      friend = User.find(friend_id)
+      sender = User.find(sender_id)
+      send_termination_notification_to(friend, sender)
     end
   end
 end
