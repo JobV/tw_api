@@ -16,42 +16,44 @@ module ApnsHelper
       alert:             message,
       badge:             1,
       category:          "meetup",
-      identifier:        identifier,
-      custom:            { "friend_id" => friend_id },
+      custom:            {
+                           "friend_id" => friend_id,
+                           "action"    => identifier,
+                         },
       expiry:            1.hour    # optional; 0 is default, meaning the message is not stored
     )
   end
 
-  def push_declined_notification(device)
-    message = "#{device.user.first_name} denied to meetup!"
+  def push_declined_notification(user, device)
+    message = "#{user.first_name} denied to meetup!"
     notification = generate_notification_for device, message, user.id, 3
     pusher.push(notification)
   end
 
-  def push_accepted_notification(device)
-    message = "#{device.user.first_name} accepted to meetup!"
+  def push_accepted_notification(user, device)
+    message = "#{user.first_name} accepted to meetup!"
     notification = generate_notification_for device, message, user.id, 2
     pusher.push(notification)
   end
 
-  def push_request_notification(device)
-    message = "#{device.user.first_name} wants to meet!"
+  def push_request_notification(user, device)
+    message = "#{user.first_name} wants to meet!"
     notification = generate_notification_for device, message, user.id, 1
     pusher.push(notification)
   end
 
-  def send_meetup_notification_to(user)
+  def send_meetup_notification_to(user, sender)
     device = user.devices.last
-    push_request_notification(device) if device
+    push_request_notification(sender, device) if device
   end
 
-  def send_acceptance_notification_to(user)
+  def send_acceptance_notification_to(user, sender)
     device = user.devices.last
-    push_accepted_notification(device) if device
+    push_accepted_notification(sender, device) if device
   end
 
-  def send_refusal_notification_to(user)
+  def send_refusal_notification_to(user, sender)
     device = user.devices.last
-    push_declined_notification(device) if device
+    push_declined_notification(sender, device) if device
   end
 end

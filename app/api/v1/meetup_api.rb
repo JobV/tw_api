@@ -49,7 +49,7 @@ module V1
             if meetup
               meetup.status = 'accepted'
               if meetup.save
-                notify_acceptance(params[:friend_id].to_i)
+                notify_acceptance(params[:friend_id].to_i, user.id)
               else
                 error! 'Access Denied', 403
               end
@@ -71,7 +71,7 @@ module V1
             if meetup
               meetup.status = 'declined'
               if meetup.save
-                notify_refusal(params[:friend_id].to_i)
+                notify_refusal(params[:friend_id].to_i, user.id)
               else
                 error! 'Access Denied'
               end
