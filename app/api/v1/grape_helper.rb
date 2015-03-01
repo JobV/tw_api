@@ -14,14 +14,32 @@ module V1
 
     def get_status_with_friend(user_id, friend_id)
       meetup = MeetupRequest.where(user_id: user_id, friend_id: friend_id).last
-      if meetup
-        if meetup.status == "terminated" || meetup.status == "declined"
-          "ready"
+      reverse_meetup =  MeetupRequest.where(user_id: friend_id, friend_id: user_id).last
+
+      if meetup.updated_at > reverse_meetup.updated_at
+        if meetup
+          if meetup.status == "terminated" || meetup.status == "declined"
+            "ready"
+          else
+            meetup.status
+          end
         else
-          meetup.status
+          "ready"
         end
       else
-        "ready"
+        if reverse_meetup
+          if reverse_meetup == "terminated" || reverse_meetup.status == "declined"
+            "ready"
+          else
+            if reverse_meetup.status == "pending"
+              "waiting"
+            else
+              "ready"
+            end
+          end
+        else
+          "ready"
+        end
       end
     end
 
