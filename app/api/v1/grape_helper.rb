@@ -17,29 +17,17 @@ module V1
       reverse_meetup =  MeetupRequest.where(user_id: friend_id, friend_id: user_id).last
 
       if meetup.updated_at > reverse_meetup.updated_at
-        if meetup
-          if meetup.status == "terminated" || meetup.status == "declined"
-            "ready"
-          else
-            meetup.status
-          end
-        else
-          "ready"
-        end
+        meetup.has_finished? ? "ready" : meetup.status
       else
-        if reverse_meetup
-          if reverse_meetup == "terminated" || reverse_meetup.status == "declined"
-            "ready"
-          else
-            if reverse_meetup.status == "pending"
-              "waiting"
-            else
-              "ready"
-            end
-          end
-        else
-          "ready"
-        end
+        reverse_meetup.has_finished? ? "ready" : status_of(reverse_meetup)
+      end
+    end
+
+    def status_of(reverse_meetup)
+      if reverse_meetup.is_pending?
+        "waiting"
+      else
+        reverse_meetup.status
       end
     end
 
