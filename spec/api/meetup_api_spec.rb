@@ -114,3 +114,24 @@ RSpec.describe 'post /api/v1/users/:id/meetups/decline', type: :request do
     specify { expect(response.code).to eq '404' }
   end
 end
+
+RSpec.describe 'post /api/v1/users/:id/meetups/terminate', type: :request do
+  let(:user)   { create(:user) }
+  let(:friend) { create(:user, first_name: 'Rudolph') }
+
+  context 'terminate most recent meetup request with friend' do
+    before do
+      user.friends << friend
+      MeetupRequest.create user_id: friend.id, friend_id: user.id
+      post "/api/v1/users/#{user.id}/meetups/terminate", friend_id: friend.id
+    end
+
+    specify { expect(response.code).to eq '201' }
+    specify { expect(MeetupRequest.last.status).to eq 'terminated' }
+  end
+
+  context 'terminate non existing meetup request' do
+    before { post "/api/v1/users/#{user.id}/meetups/terminate", friend_id: 32 }
+    specify { expect(response.code).to eq '404' }
+  end
+end

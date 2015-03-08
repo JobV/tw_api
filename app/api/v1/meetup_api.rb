@@ -48,7 +48,11 @@ module V1
 
             if meetup
               meetup.status = 'accepted'
-              error! 'Access Denied', 403 unless meetup.save
+              if meetup.save
+                notify_acceptance(params[:friend_id].to_i, user.id)
+              else
+                error! 'Access Denied', 403
+              end
             else
               error! 'Access Denied', 404
             end
@@ -66,7 +70,34 @@ module V1
 
             if meetup
               meetup.status = 'declined'
-              error! 'Access Denied', 403 unless meetup.save
+              if meetup.save
+                notify_refusal(params[:friend_id].to_i, user.id)
+              else
+                error! 'Access Denied'
+              end
+            else
+              error! 'Access Denied', 404
+            end
+          end
+
+          desc "Terminate a meetup"
+          params do
+            requires :friend_id, type: Integer, desc: "Friend id."
+          end
+          post '/terminate' do
+            meetup = MeetupRequest.where(
+              "(user_id = :friend_id AND friend_id = :user_id )
+              OR (user_id = :user_id AND friend_id = :friend_id )",
+              friend_id: params[:friend_id],
+              user_id: user.id).last
+
+            if meetup
+              meetup.status = 'terminated'
+              if meetup.save
+                notify_termination(params[:friend_id].to_i, user.id)
+              else
+                error! 'Access Denied'
+              end
             else
               error! 'Access Denied', 404
             end
