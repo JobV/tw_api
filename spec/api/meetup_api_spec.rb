@@ -130,20 +130,6 @@ RSpec.describe 'post /api/v1/users/:id/meetups/terminate', type: :request do
     specify { expect(MeetupRequest.last.status).to eq 'terminated' }
   end
 
-  context 'terminate old meetup request with friend' do
-    before do
-      user.friends << friend
-      MeetupRequest.create(
-        user_id: friend.id,
-        friend_id: user.id,
-        created_at: Time.now - 1.day
-      )
-      post "/api/v1/users/#{user.id}/meetups/terminate", friend_id: friend.id
-    end
-
-    specify { expect(response.code).to eq '404' }
-  end
-
   context 'terminate non existing meetup request' do
     before { post "/api/v1/users/#{user.id}/meetups/terminate", friend_id: 32 }
     specify { expect(response.code).to eq '404' }
