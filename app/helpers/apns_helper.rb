@@ -17,10 +17,7 @@ module ApnsHelper
       alert:             message,
       badge:             1,
       category:          "meetup",
-      custom:            {
-                           "friend_id" => friend_id,
-                           "action"    => identifier
-                         },
+      custom:            {  "friend_id" => friend_id, "action" => identifier },
       expiry:            1.hour    # optional; 0 is default, meaning the message is not stored
     )
   end

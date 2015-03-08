@@ -16,15 +16,33 @@ module V1
       meetup = MeetupRequest.where(user_id: user_id, friend_id: friend_id).last
       reverse_meetup =  MeetupRequest.where(user_id: friend_id, friend_id: user_id).last
 
-      if meetup.updated_at > reverse_meetup.updated_at
-        meetup.has_finished? ? "ready" : meetup.status
+      if not_first_meeting(meetup, reverse_meetup)
+        get_status_from_last_meetup(meetup, reverse_meetup)
       else
-        reverse_meetup.has_finished? ? "ready" : status_of(reverse_meetup)
+        "ready"
       end
     end
 
+    def get_status_from_last_meetup(meetup, reverse_meetup)
+      if created_by_user(meetup, reverse_meetup)
+        meetup.finished? ? "ready" : meetup.status
+      else
+        reverse_meetup.finished? ? "ready" : status_of(reverse_meetup)
+      end
+    end
+
+    def created_by_user(meetup, reverse_meetup)
+      return false if meetup.nil?
+      return true if reverse_meetup.nil?
+      meetup.updated_at > reverse_meetup.updated_at
+    end
+
+    def not_first_meeting(meetup, reverse_meetup)
+      !(meetup.nil? && reverse_meetup.nil?)
+    end
+
     def status_of(reverse_meetup)
-      if reverse_meetup.is_pending?
+      if reverse_meetup.pending?
         "waiting"
       else
         reverse_meetup.status

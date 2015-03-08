@@ -17,11 +17,11 @@ class MeetupRequest < ActiveRecord::Base
   belongs_to :friend, class_name: 'User'
   enum status: [:pending, :accepted, :declined, :terminated]
 
-  def has_finished?
+  def finished?
     status == "terminated" || status == "declined"
   end
 
-  def is_pending?
+  def pending?
     status == "pending"
   end
 end

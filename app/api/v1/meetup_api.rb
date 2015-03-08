@@ -85,11 +85,11 @@ module V1
             requires :friend_id, type: Integer, desc: "Friend id."
           end
           post '/terminate' do
-
-            meetup = MeetupRequest.where("(user_id = :friend_id AND friend_id = :user_id )
+            meetup = MeetupRequest.where(
+              "(user_id = :friend_id AND friend_id = :user_id )
               OR (user_id = :user_id AND friend_id = :friend_id )",
-              {friend_id: params[:friend_id], user_id: user.id})
-              .last
+              friend_id: params[:friend_id],
+              user_id: user.id).last
 
             if meetup
               meetup.status = 'terminated'
