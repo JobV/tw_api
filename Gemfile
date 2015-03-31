@@ -39,6 +39,9 @@ gem 'skylight'
 
 gem 'grocer'
 
+gem 'omniauth'
+gem 'omniauth-facebook', '1.4.0'
+
 group :development do
   gem 'annotate' # annotate models
   gem 'guard-rspec', require: false
