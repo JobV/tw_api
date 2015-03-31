@@ -18,6 +18,7 @@ gem 'spring',        group: :development
 
 # Build API
 gem 'grape'
+
 gem 'hashie_rails' # use in case of mass-assignment problems wth grape
 
 # RGeo + Postgis adapter
@@ -39,8 +40,7 @@ gem 'skylight'
 
 gem 'grocer'
 
-gem 'omniauth'
-gem 'omniauth-facebook', '1.4.0'
+gem "koala", "~> 1.11.0rc"
 
 group :development do
   gem 'annotate' # annotate models
