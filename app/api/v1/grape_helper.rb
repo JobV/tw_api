@@ -5,6 +5,14 @@ module V1
       error!('Unauthorized. Invalid or expired token.', 401) unless current_user
     end
 
+    def logout
+      if apikey = ApiKey.find_by(access_token: params[:token])
+        apikey.destroy
+      else
+        false
+      end
+    end
+
     def authenticated_with_provider
       @graph = Koala::Facebook::API.new(params[:oauth_token])
       begin

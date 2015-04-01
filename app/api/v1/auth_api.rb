@@ -3,7 +3,7 @@ module V1
     version 'v1'
     format :json
     prefix :api
-    rescue_from :all
+
     helpers V1::GrapeHelper
 
     resource :auth do
@@ -27,13 +27,20 @@ module V1
         end
       end
 
-      desc "Returns pong if logged in correctly"
+      desc "Destroys login token"
       params do
         requires :token, type: String, desc: "Access token."
       end
-      get :ping do
-        authenticate!
-        { message: "pong" }
+      delete :logout do
+        if logout
+          {
+            success: "logout was successful"
+          }
+        else
+          {
+            error: "logout was unsuccessful"
+          }
+        end
       end
     end
   end
