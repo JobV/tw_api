@@ -1,20 +1,22 @@
 module V1
   class UsersApi < Grape::API
     helpers ApnsHelper
-
     version 'v1'
     format :json
     prefix :api
     rescue_from :all
+    helpers V1::GrapeHelper
 
     resource :users do
       desc "Return a user."
       params do
         requires :id, type: Integer, desc: "User id."
+        requires :token, type: String, desc: "Access token."
       end
       route_param :id do
         get do
-          User.find(params[:id])
+          authenticate!
+          current_user
         end
       end
 
