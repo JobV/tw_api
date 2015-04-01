@@ -20,11 +20,6 @@ module V1
         end
       end
 
-      desc "Return a list of users."
-      get do
-        User.all
-      end
-
       desc "Create a new user."
       params do
         requires :first_name, type: String, desc: "First name."
