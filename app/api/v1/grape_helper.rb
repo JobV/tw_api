@@ -4,6 +4,19 @@ module V1
       User.find(params[:id])
     end
 
+    def authenticate!
+      error!('Unauthorized. Invalid or expired token.', 401) unless current_user
+    end
+
+    def current_user
+      token = ApiKey.where(access_token: params[:token]).first
+      if token && !token.expired?
+        @current_user = User.find(token.user_id)
+      else
+        false
+      end
+    end
+
     def create_meetup(friendship)
       meetup = MeetupRequest.create user_id: friendship.user_id,
                                     friend_id: friendship.friend_id,

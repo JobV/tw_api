@@ -1,4 +1,10 @@
-FactoryGirl.define do
+FactoryGirl.define do  factory :api_key do
+    access_token "MyString"
+expires_at "2015-04-01 12:47:48"
+user_id 1
+active false
+  end
+
   factory :meetup_request do
     friendship_id 1
     status 1
