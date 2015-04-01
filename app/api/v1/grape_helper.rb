@@ -1,11 +1,17 @@
 module V1
   module GrapeHelper
-    def user
-      User.find(params[:id])
-    end
 
     def authenticate!
       error!('Unauthorized. Invalid or expired token.', 401) unless current_user
+    end
+
+    def authenticated_with_provider
+      @graph = Koala::Facebook::API.new(params[:oauth_token])
+      begin
+        profile = @graph.get_object("me")
+      rescue
+        false
+      end
     end
 
     def current_user

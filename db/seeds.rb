@@ -10,7 +10,7 @@
   marcelo = User.new
   marcelo.first_name = "Marcelo"
   marcelo.last_name = "Lebre"
-  marcelo.email = "marcelo.lebre@gmail.com"
+  marcelo.email = "marcelo.lebre@hotmail.com"
   marcelo.phone_nr = "+351913226179"
   marcelo.save
 

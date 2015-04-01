@@ -7,5 +7,6 @@ module V1
     mount V1::UsersApi
     mount V1::FriendsApi
     mount V1::MeetupApi
+    mount V1::AuthApi
   end
 end

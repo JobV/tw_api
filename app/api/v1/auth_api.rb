@@ -11,19 +11,17 @@ module V1
       desc "Creates and returns access_token if valid login"
       params do
         requires :login, type: String, desc: "Username or email address"
-        requires :password, type: String, desc: "Password"
+        requires :oauth_token, type: String, desc: "OAuth Token"
       end
       post :login do
 
-        if params[:login].include?("@")
-          user = User.find_by_email(params[:login].downcase)
-        else
-          user = User.find_by_login(params[:login].downcase)
-        end
+        user = User.find_by_email(params[:login].downcase)
 
-        if user && user.authenticate(params[:password])
+        if user && authenticated_with_provider
           key = ApiKey.create(user_id: user.id)
-          {token: key.access_token}
+          {
+            token: key.access_token
+          }
         else
           error!('Unauthorized.', 401)
         end
