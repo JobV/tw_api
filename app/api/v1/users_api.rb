@@ -35,26 +35,6 @@ module V1
           phone_nr: params[:phone_nr]
           )
       end
-
-      desc "Update a user."
-      params do
-        requires :id, type: String, desc: "User id."
-      end
-      put ':id' do
-        User.find(params[:id]).update(
-          first_name: params[:first_name],
-          last_name: params[:last_name],
-          email: params[:email]
-          )
-      end
-
-      desc "Delete a user."
-      params do
-        requires :id, type: String, desc: "User id."
-      end
-      delete ':id' do
-        User.find(params[:id]).destroy!
-      end
     end
   end
 end
