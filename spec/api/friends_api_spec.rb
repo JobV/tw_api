@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'get /api/v1/users/:id/friends', type: :request do
+RSpec.describe 'get /api/v1/users/friends', type: :request do
   context 'user has 3 friends' do
     let(:user) { create(:user) }
 
@@ -8,8 +8,9 @@ RSpec.describe 'get /api/v1/users/:id/friends', type: :request do
       user.friends << create(:user, first_name: 'Marcelo')
       user.friends << create(:user, first_name: 'Carla')
       user.friends << create(:user, first_name: 'Job')
+      token = create(:api_key, access_token: "12345678", expires_at: Date.tomorrow, user_id: user.id)
 
-      get "/api/v1/users/#{user.id}/friends"
+      get "/api/v1/users/friends", token: token.access_token
     end
     it 'returns 200' do
       expect(response.code).to eq '200'
@@ -25,7 +26,7 @@ RSpec.describe 'get /api/v1/users/:id/friends', type: :request do
   end
 end
 
-RSpec.describe 'post /api/v1/users/:id/friends', type: :request do
+RSpec.describe 'post /api/v1/users/friends', type: :request do
   let(:user)   { create(:user) }
   let(:friend) { create(:user, first_name: 'Rudolph') }
   let(:friend2) { create(:user) }
@@ -33,7 +34,9 @@ RSpec.describe 'post /api/v1/users/:id/friends', type: :request do
 
   context 'add a single friend that exists' do
     before do
-      post "/api/v1/users/#{user.id}/friends", phone_nrs: ["#{friend.phone_nr}"]
+      token = create(:api_key, access_token: "12345678", expires_at: Date.tomorrow, user_id: user.id)
+
+      post "/api/v1/users/friends", phone_nrs: ["#{friend.phone_nr}"], token: token.access_token
     end
 
     it 'returns 201' do
@@ -48,7 +51,9 @@ RSpec.describe 'post /api/v1/users/:id/friends', type: :request do
 
   context 'add multiple friends that exist' do
     before do
-      post "/api/v1/users/#{user.id}/friends", phone_nrs: [friend.phone_nr, friend2.phone_nr, friend3.phone_nr]
+      token = create(:api_key, access_token: "12345678", expires_at: Date.tomorrow, user_id: user.id)
+
+      post "/api/v1/users/friends", phone_nrs: [friend.phone_nr, friend2.phone_nr, friend3.phone_nr], token: token.access_token
     end
 
     it 'returns 201' do
@@ -62,7 +67,9 @@ RSpec.describe 'post /api/v1/users/:id/friends', type: :request do
 
   context 'add some friends that exist and others that dont' do
     before do
-      post "/api/v1/users/#{user.id}/friends", phone_nrs: [friend.phone_nr, friend2.phone_nr, '0000123']
+      token = create(:api_key, access_token: "12345678", expires_at: Date.tomorrow, user_id: user.id)
+
+      post "/api/v1/users/friends", phone_nrs: [friend.phone_nr, friend2.phone_nr, '0000123'], token: token.access_token
     end
 
     it 'returns 201' do
@@ -76,7 +83,9 @@ RSpec.describe 'post /api/v1/users/:id/friends', type: :request do
 
   context 'add one friend that does not exist' do
     before do
-      post "/api/v1/users/#{user.id}/friends", phone_nrs: ['0000123']
+      token = create(:api_key, access_token: "12345678", expires_at: Date.tomorrow, user_id: user.id)
+
+      post "/api/v1/users/friends", phone_nrs: ['0000123'], token: token.access_token
     end
 
     it 'returns 201' do
