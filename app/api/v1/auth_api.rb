@@ -6,13 +6,13 @@ module V1
     helpers V1::GrapeHelper
 
     resource :auth do
-      desc "Creates and returns access_token if valid login"
+      desc "Creates and returns access_token if valid login, creates new user if new credentials"
       params do
         requires :login, type: String, desc: "Username or email address"
         requires :oauth_token, type: String, desc: "OAuth Token"
       end
       post :login do
-        user = User.find_by_email(params[:login].downcase)
+        user = User.find_or_create_by(email: params[:login].downcase)
 
         if user && authenticated_with_provider
           key = ApiKey.create(user_id: user.id)
