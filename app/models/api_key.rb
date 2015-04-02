@@ -4,17 +4,19 @@ class ApiKey < ActiveRecord::Base
   belongs_to :user
 
   def expired?
-    DateTime.now >= self.expires_at
+    DateTime.now >= expires_at
   end
 
   private
+
   def generate_access_token
-    begin
+    loop do
       self.access_token = SecureRandom.hex
-    end while self.class.exists?(access_token: access_token)
+      break unless self.class.exists?(access_token: access_token)
+    end
   end
 
   def set_expiration
-    self.expires_at = DateTime.now+30
+    self.expires_at = DateTime.now + 30
   end
 end

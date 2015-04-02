@@ -1,22 +1,18 @@
 module V1
   module GrapeHelper
-
     def authenticate!
       error!('Unauthorized. Invalid or expired token.', 401) unless current_user
     end
 
     def logout
-      if apikey = ApiKey.find_by(access_token: params[:token])
-        apikey.destroy
-      else
-        false
-      end
+      apikey = ApiKey.find_by(access_token: params[:token])
+      apikey ? apikey.destroy : false
     end
 
     def authenticated_with_provider
       @graph = Koala::Facebook::API.new(params[:oauth_token])
       begin
-        profile = @graph.get_object("me")
+        @graph.get_object("me")
       rescue
         false
       end
@@ -98,6 +94,14 @@ module V1
       friend = User.find(friend_id)
       sender = User.find(sender_id)
       send_termination_notification_to(friend, sender)
+    end
+
+    def find_meetup(friend_id, user_id)
+      MeetupRequest.where(
+      "(user_id = :friend_id AND friend_id = :user_id )
+      OR (user_id = :user_id AND friend_id = :friend_id )",
+      friend_id: friend_id,
+      user_id: user_id).last
     end
   end
 end

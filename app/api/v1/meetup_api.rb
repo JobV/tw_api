@@ -14,93 +14,99 @@ module V1
     helpers ApnsHelper
 
     resource :users do
-      route_param :id do
-        resource :meetups do
-          desc "Return received pending meetups"
-          get do
-            {
-              "received" => user.pending_meetup_requests_received
-            }
-          end
+      resource :meetups do
+        desc "Return received pending meetups"
+        params do
+          requires :token, type: String, desc: "Access token."
+        end
+        get do
+          authenticate!
+          {
+            "received" => current_user.pending_meetup_requests_received
+          }
+        end
 
-          desc "Request a meetup"
-          params do
-            requires :friend_id, type: Integer, desc: "Friend id."
+        desc "Request a meetup"
+        params do
+          requires :friend_id, type: Integer, desc: "Friend id."
+          requires :token, type: String, desc: "Access token."
+        end
+        post do
+          authenticate!
+          friendship = Friendship.find_by(user: current_user, friend_id: params[:friend_id].to_i)
+          if friendship
+            create_meetup(friendship)
+          else
+            error! 'Access Denied', 403
           end
-          post do
-            friendship = Friendship.find_by(user: user, friend_id: params[:friend_id].to_i)
-            if friendship
-              create_meetup(friendship)
+        end
+
+        desc "Accept a meetup"
+        params do
+          requires :friend_id, type: Integer, desc: "Friend id."
+          requires :token, type: String, desc: "Access token."
+        end
+        post '/accept' do
+          authenticate!
+          meetup = MeetupRequest.where(
+          user_id: params[:friend_id],
+          friend_id: current_user.id,
+          created_at: (Time.now - 1.hour)..Time.now).last
+
+          if meetup
+            meetup.status = 'accepted'
+            if meetup.save
+              notify_acceptance(params[:friend_id].to_i, current_user.id)
             else
               error! 'Access Denied', 403
             end
+          else
+            error! 'Access Denied', 404
           end
+        end
 
-          desc "Accept a meetup"
-          params do
-            requires :friend_id, type: Integer, desc: "Friend id."
-          end
-          post '/accept' do
-            meetup = MeetupRequest.where(
-              user_id: params[:friend_id],
-              friend_id: user.id,
-              created_at: (Time.now - 1.hour)..Time.now).last
+        desc "Decline a meetup"
+        params do
+          requires :friend_id, type: Integer, desc: "Friend id."
+          requires :token, type: String, desc: "Access token."
+        end
+        post '/decline' do
+          authenticate!
+          meetup = MeetupRequest.where(
+          user_id: params[:friend_id],
+          friend_id: current_user.id,
+          created_at: (Time.now - 1.hour)..Time.now).last
 
-            if meetup
-              meetup.status = 'accepted'
-              if meetup.save
-                notify_acceptance(params[:friend_id].to_i, user.id)
-              else
-                error! 'Access Denied', 403
-              end
+          if meetup
+            meetup.status = 'declined'
+            if meetup.save
+              notify_refusal(params[:friend_id].to_i, current_user.id)
             else
-              error! 'Access Denied', 404
+              error! 'Access Denied'
             end
+          else
+            error! 'Access Denied', 404
           end
+        end
 
-          desc "Decline a meetup"
-          params do
-            requires :friend_id, type: Integer, desc: "Friend id."
-          end
-          post '/decline' do
-            meetup = MeetupRequest.where(
-              user_id: params[:friend_id],
-              friend_id: user.id,
-              created_at: (Time.now - 1.hour)..Time.now).last
+        desc "Terminate a meetup"
+        params do
+          requires :friend_id, type: Integer, desc: "Friend id."
+          requires :token, type: String, desc: "Access token."
+        end
+        post '/terminate' do
+          authenticate!
+          meetup = find_meetup(params[:friend_id], current_user.id)
 
-            if meetup
-              meetup.status = 'declined'
-              if meetup.save
-                notify_refusal(params[:friend_id].to_i, user.id)
-              else
-                error! 'Access Denied'
-              end
+          if meetup
+            meetup.status = 'terminated'
+            if meetup.save
+              notify_termination(params[:friend_id].to_i, current_user.id)
             else
-              error! 'Access Denied', 404
+              error! 'Access Denied'
             end
-          end
-
-          desc "Terminate a meetup"
-          params do
-            requires :friend_id, type: Integer, desc: "Friend id."
-          end
-          post '/terminate' do
-            meetup = MeetupRequest.where(
-              "(user_id = :friend_id AND friend_id = :user_id )
-              OR (user_id = :user_id AND friend_id = :friend_id )",
-              friend_id: params[:friend_id],
-              user_id: user.id).last
-
-            if meetup
-              meetup.status = 'terminated'
-              if meetup.save
-                notify_termination(params[:friend_id].to_i, user.id)
-              else
-                error! 'Access Denied'
-              end
-            else
-              error! 'Access Denied', 404
-            end
+          else
+            error! 'Access Denied', 404
           end
         end
       end

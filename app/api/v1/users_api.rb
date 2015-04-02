@@ -10,14 +10,11 @@ module V1
     resource :users do
       desc "Return a user."
       params do
-        requires :id, type: Integer, desc: "User id."
         requires :token, type: String, desc: "Access token."
       end
-      route_param :id do
-        get do
-          authenticate!
-          current_user
-        end
+      get do
+        authenticate!
+        current_user
       end
 
       desc "Create a new user."
@@ -29,11 +26,11 @@ module V1
       end
       post do
         User.create!(
-          first_name: params[:first_name],
-          last_name: params[:last_name],
-          email: params[:email],
-          phone_nr: params[:phone_nr]
-          )
+        first_name: params[:first_name],
+        last_name: params[:last_name],
+        email: params[:email],
+        phone_nr: params[:phone_nr]
+        )
       end
     end
   end
