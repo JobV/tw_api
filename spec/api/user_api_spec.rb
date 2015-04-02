@@ -1,9 +1,13 @@
 require 'rails_helper'
 
-RSpec.describe 'get /api/v1/users/:id', type: :request do
+RSpec.describe 'get /api/v1/users', type: :request do
   context 'when the user exists' do
     let(:user) { create(:user) }
-    before { get "/api/v1/users/#{user.id}" }
+    before do
+      token = create(:api_key, access_token: "12345678", expires_at: Date.tomorrow, user_id: user.id)
+
+      get "/api/v1/users", token: token.access_token
+    end
 
     specify { expect(response.code).to eq '200' }
 
@@ -13,7 +17,11 @@ RSpec.describe 'get /api/v1/users/:id', type: :request do
   end
 
   context 'when the user does not exist' do
-    before { get "/api/v1/users/3434343434" }
+    before do
+      token = create(:api_key, access_token: "1A2B3C", expires_at: Date.tomorrow)
+
+      get "/api/v1/users", token: token.access_token
+    end
     specify { expect(response.code).to eq '500' }
   end
 end
@@ -21,10 +29,13 @@ end
 RSpec.describe 'post /api/v1/users', type: :request do
   context 'given all parameters' do
     before do
+      token = create(:api_key, access_token: "1A2B3C", expires_at: Date.tomorrow)
+
       post '/api/v1/users', first_name: 'Luke',
                             last_name: 'Skywalker',
                             email: 'luke@theforce.com',
-                            phone_nr: '123123123'
+                            phone_nr: '123123123',
+                            token: token.access_token
     end
 
     it 'creates a new user' do
@@ -37,42 +48,14 @@ RSpec.describe 'post /api/v1/users', type: :request do
   end
 
   context 'given missing parameter' do
-    it 'returns 500' do
-      post '/api/v1/users', first_name: 'Luke'
-      expect(response.code).to eq '500'
-    end
-  end
-end
-
-RSpec.describe 'put /api/v1/users/:id', type: :request do
-  context 'given all parameters' do
-    let(:user) { create(:user) }
-
     before do
-      put "/api/v1/users/#{user.id}", first_name: 'Anakin'
+      token = create(:api_key, access_token: "1A2B3C", expires_at: Date.tomorrow)
+
+      post '/api/v1/users', first_name: 'Luke', token: token.access_token
     end
 
-    it 'creates updates the user' do
-      expect(response.code).to eq '200'
-      user = User.last
-      expect(user.first_name).to eq 'Anakin'
-    end
-  end
-
-  context 'given missing parameter' do
     it 'returns 500' do
-      post '/api/v1/users', first_name: 'Luke'
       expect(response.code).to eq '500'
-    end
-  end
-end
-
-RSpec.describe 'delete /api/v1/users/1', type: :request do
-  context 'given existing user' do
-    it 'deletes the user' do
-      user = create(:user)
-      delete "/api/v1/users/#{user.id}"
-      expect(response.code).to eq '200'
     end
   end
 end
