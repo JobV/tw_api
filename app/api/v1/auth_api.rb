@@ -12,16 +12,25 @@ module V1
         requires :oauth_token, type: String, desc: "OAuth Token"
       end
       post :login do
-        user = User.find_or_create_by(email: params[:login].downcase)
+        user_email = params[:login].downcase
+        user = User.find_by(email: user_email)
 
-        if user && authenticated_with_provider
-          key = ApiKey.create(user_id: user.id)
-          {
-            token: key.access_token
-          }
+        if user && !user_email.empty?
+          if authenticated_with_provider
+            key = ApiKey.create(user_id: user.id)
+            {
+              auth_token: key.access_token.to_s
+            }
+          else
+            error!('Unauthorized.', 401)
+          end
         else
-          error!('Unauthorized.', 401)
+          key = create_user_from_provider
+          {
+            auth_token: key.access_token.to_s
+          }
         end
+
       end
 
       desc "Destroys login token"

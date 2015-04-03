@@ -9,6 +9,25 @@ module V1
       apikey ? apikey.destroy : false
     end
 
+    def create_user_from_provider
+      @graph = Koala::Facebook::API.new(params[:oauth_token])
+
+      begin
+        profile = @graph.get_object("me")
+
+        user = User.create( provider_id: profile["id"],
+                            provider: "facebook",
+                            email: profile["email"],
+                            first_name: profile["first_name"],
+                            last_name: profile["last_name"])
+
+        ApiKey.create(user_id: user.id)
+      rescue
+        false
+      end
+
+    end
+
     def authenticated_with_provider
       @graph = Koala::Facebook::API.new(params[:oauth_token])
       begin

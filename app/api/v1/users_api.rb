@@ -12,7 +12,7 @@ module V1
       params do
         requires :token, type: String, desc: "Access token."
       end
-      get do
+      post 'userInfo' do
         authenticate!
         current_user
       end
