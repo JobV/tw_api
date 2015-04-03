@@ -14,7 +14,7 @@ module V1
 
       begin
         profile = @graph.get_object("me")
-
+        
         user = User.create( provider_id: profile["id"],
                             provider: "facebook",
                             email: profile["email"],

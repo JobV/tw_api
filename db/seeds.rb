@@ -12,6 +12,8 @@
   marcelo.last_name = "Lebre"
   marcelo.email = "marcelo.lebre@hotmail.com"
   marcelo.phone_nr = "+351913226179"
+  marcelo.provider = "facebook"
+  marcelo.provider_id = "10200259166559696"
   marcelo.save
 
   job = User.new

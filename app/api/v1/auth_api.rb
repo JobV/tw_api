@@ -15,7 +15,7 @@ module V1
         user_email = params[:login].downcase
         user = User.find_by(email: user_email)
 
-        if user && !user_email.empty?
+        if user
           if authenticated_with_provider
             key = ApiKey.create(user_id: user.id)
             {
