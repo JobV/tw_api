@@ -31,7 +31,6 @@ module V1
             auth_token: key.access_token.to_s
           }
         end
-
       end
 
       desc "Destroys login token"

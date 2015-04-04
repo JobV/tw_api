@@ -11,8 +11,16 @@ module V1
 
     def update_fb_friends
       @graph = Koala::Facebook::API.new(params[:oauth_token])
-      friends = @graph.get_connections("me", "friends")
-      
+
+      begin
+        friends = @graph.get_connections("me", "friends")
+        sync_fb_friends(friends)
+      rescue
+        false
+      end
+    end
+
+    def sync_fb_friends(friends)
       ActiveRecord::Base.transaction do
         friends.each do |friend|
           u = User.find_by(provider_id: friend["id"])
@@ -26,18 +34,20 @@ module V1
 
       begin
         profile = @graph.get_object("me")
-
-        user = User.create( provider_id: profile["id"],
-                            provider: "facebook",
-                            email: profile["email"],
-                            first_name: profile["first_name"],
-                            last_name: profile["last_name"])
+        user = create_user_from_fb(profile)
 
         ApiKey.create(user_id: user.id)
       rescue
         false
       end
+    end
 
+    def create_user_from_fb(profile)
+      User.create(provider_id: profile["id"],
+                  provider: "facebook",
+                  email: profile["email"],
+                  first_name: profile["first_name"],
+                  last_name: profile["last_name"])
     end
 
     def authenticated_with_provider
