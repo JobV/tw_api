@@ -10,6 +10,7 @@ module V1
       params do
         requires :login, type: String, desc: "Username or email address"
         requires :oauth_token, type: String, desc: "OAuth Token"
+        requires :device_token, type: String, desc: "device token"
       end
       post :login do
         user_email = params[:login].downcase
@@ -26,10 +27,15 @@ module V1
             error!('Unauthorized.', 401)
           end
         else
-          key = create_user_from_provider
-          {
-            auth_token: key.access_token.to_s
-          }
+          device_token = params[:device_token]
+          if device_token
+            key = create_user_from_provider_with(device_token)
+            {
+              auth_token: key.access_token.to_s
+            }
+          else
+            error!('Unauthorized.', 401)
+          end
         end
       end
 

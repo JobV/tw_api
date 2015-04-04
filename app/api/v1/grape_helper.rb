@@ -29,13 +29,14 @@ module V1
       end
     end
 
-    def create_user_from_provider
+    def create_user_from_provider_with(device_token)
       @graph = Koala::Facebook::API.new(params[:oauth_token])
 
       begin
         profile = @graph.get_object("me")
         user = create_user_from_fb(profile)
 
+        Device.create(token: device_token, user_id: user.id)
         ApiKey.create(user_id: user.id)
       rescue
         false
