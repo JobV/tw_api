@@ -11,11 +11,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150211221752) do
+ActiveRecord::Schema.define(version: 20150403192742) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "postgis"
+
+  create_table "api_keys", force: true do |t|
+    t.string   "access_token"
+    t.datetime "expires_at"
+    t.integer  "user_id"
+    t.boolean  "active"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "api_keys", ["access_token"], :name => "index_api_keys_on_access_token", :unique => true
+  add_index "api_keys", ["user_id"], :name => "index_api_keys_on_user_id"
 
   create_table "devices", force: true do |t|
     t.string  "token"
@@ -65,6 +77,8 @@ ActiveRecord::Schema.define(version: 20150211221752) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "phone_nr"
+    t.string   "provider"
+    t.string   "provider_id"
   end
 
 end

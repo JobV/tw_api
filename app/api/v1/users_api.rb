@@ -1,26 +1,20 @@
 module V1
   class UsersApi < Grape::API
     helpers ApnsHelper
-
     version 'v1'
     format :json
     prefix :api
     rescue_from :all
+    helpers V1::GrapeHelper
 
     resource :users do
       desc "Return a user."
       params do
-        requires :id, type: Integer, desc: "User id."
+        requires :token, type: String, desc: "Access token."
       end
-      route_param :id do
-        get do
-          User.find(params[:id])
-        end
-      end
-
-      desc "Return a list of users."
       get do
-        User.all
+        authenticate!
+        current_user
       end
 
       desc "Create a new user."
@@ -32,31 +26,11 @@ module V1
       end
       post do
         User.create!(
-          first_name: params[:first_name],
-          last_name: params[:last_name],
-          email: params[:email],
-          phone_nr: params[:phone_nr]
-          )
-      end
-
-      desc "Update a user."
-      params do
-        requires :id, type: String, desc: "User id."
-      end
-      put ':id' do
-        User.find(params[:id]).update(
-          first_name: params[:first_name],
-          last_name: params[:last_name],
-          email: params[:email]
-          )
-      end
-
-      desc "Delete a user."
-      params do
-        requires :id, type: String, desc: "User id."
-      end
-      delete ':id' do
-        User.find(params[:id]).destroy!
+        first_name: params[:first_name],
+        last_name: params[:last_name],
+        email: params[:email],
+        phone_nr: params[:phone_nr]
+        )
       end
     end
   end

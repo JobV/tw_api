@@ -18,6 +18,7 @@ gem 'spring',        group: :development
 
 # Build API
 gem 'grape'
+
 gem 'hashie_rails' # use in case of mass-assignment problems wth grape
 
 # RGeo + Postgis adapter
@@ -38,6 +39,8 @@ gem 'activerecord-postgis-adapter'
 gem 'skylight'
 
 gem 'grocer'
+
+gem "koala", "~> 1.11.0rc"
 
 group :development do
   gem 'annotate' # annotate models

@@ -1,7 +1,72 @@
 module V1
   module GrapeHelper
-    def user
-      User.find(params[:id])
+    def authenticate!
+      error!('Unauthorized. Invalid or expired token.', 401) unless current_user
+    end
+
+    def logout
+      apikey = ApiKey.find_by(access_token: params[:token])
+      apikey ? apikey.destroy : false
+    end
+
+    def update_fb_friends
+      @graph = Koala::Facebook::API.new(params[:oauth_token])
+
+      begin
+        friends = @graph.get_connections("me", "friends")
+        sync_fb_friends(friends)
+      rescue
+        false
+      end
+    end
+
+    def sync_fb_friends(friends)
+      ActiveRecord::Base.transaction do
+        friends.each do |friend|
+          u = User.find_by(provider_id: friend["id"])
+          current_user.friends << u if u && !current_user.friends.exists?(u)
+        end
+      end
+    end
+
+    def create_user_from_provider_with(device_token)
+      @graph = Koala::Facebook::API.new(params[:oauth_token])
+
+      begin
+        profile = @graph.get_object("me")
+        user = create_user_from_fb(profile)
+
+        Device.create(token: device_token, user_id: user.id)
+        ApiKey.create(user_id: user.id)
+      rescue
+        false
+      end
+    end
+
+    def create_user_from_fb(profile)
+      User.create(provider_id: profile["id"],
+                  provider: "facebook",
+                  email: profile["email"],
+                  first_name: profile["first_name"],
+                  last_name: profile["last_name"])
+    end
+
+    def authenticated_with_provider
+      @graph = Koala::Facebook::API.new(params[:oauth_token])
+      begin
+        @graph.get_object("me")
+      rescue
+        false
+      end
+    end
+
+    def current_user
+      token = ApiKey.where(access_token: params[:token]).first
+      if token && !token.expired?
+        @current_user = User.find(token.user_id)
+      else
+        false
+      end
     end
 
     def create_meetup(friendship)
@@ -71,6 +136,14 @@ module V1
       friend = User.find(friend_id)
       sender = User.find(sender_id)
       send_termination_notification_to(friend, sender)
+    end
+
+    def find_meetup(friend_id, user_id)
+      MeetupRequest.where(
+      "(user_id = :friend_id AND friend_id = :user_id )
+      OR (user_id = :user_id AND friend_id = :friend_id )",
+      friend_id: friend_id,
+      user_id: user_id).last
     end
   end
 end

@@ -7,52 +7,60 @@ module V1
     helpers V1::GrapeHelper
 
     resource :users do
-      route_param :id do
-        resource :friends do
-          desc "Return all friends"
-          get do
-            friends = user.friends.select(
-              :first_name,
-              :last_name,
-              :phone_nr,
-              :id,
-              :email)
-            returning_friends = []
-            friends.each do |friend|
-              returning_friends << {
-                "first_name" => friend.first_name,
-                "last_name" => friend.last_name,
-                "phone_nr" => friend.phone_nr,
-                "id" => friend.id,
-                "email" => friend.email,
-                "status_with_friend" => get_status_with_friend(user.id, friend.id)
-              }
-            end
-            returning_friends
-          end
-
-          desc "Add a friend"
-          params do
-            requires :phone_nrs, type: Array[String]
-          end
-          post do
-            # Do in a single transaction for minor speed boost.
-            ActiveRecord::Base.transaction do
-              params[:phone_nrs].each do |phone_nr|
-                u = User.find_by(phone_nr: phone_nr)
-                user.friends << u if u && !user.friends.exists?(u)
-              end
-            end
-            {
-              "total_friends_count" => user.friends.count
+      resource :friends do
+        desc "Return all friends"
+        params do
+          requires :token, type: String, desc: "Access token."
+        end
+        get do
+          authenticate!
+          friends = current_user.friends.select(
+          :first_name,
+          :last_name,
+          :phone_nr,
+          :id,
+          :email)
+          returning_friends = []
+          friends.each do |friend|
+            returning_friends << {
+              "first_name" => friend.first_name,
+              "last_name" => friend.last_name,
+              "phone_nr" => friend.phone_nr,
+              "id" => friend.id,
+              "email" => friend.email,
+              "status_with_friend" => get_status_with_friend(current_user.id, friend.id)
             }
           end
+          returning_friends
         end
-        resource :curated_friends do
-          desc "Return all friends"
-          get do
-            user.curated_friends_list
+
+        desc "Add a friend"
+        params do
+          requires :token, type: String, desc: "Access token."
+          requires :phone_nrs, type: Array[String]
+        end
+        post do
+          authenticate!
+          ActiveRecord::Base.transaction do
+            params[:phone_nrs].each do |phone_nr|
+              u = User.find_by(phone_nr: phone_nr)
+              current_user.friends << u if u && !current_user.friends.exists?(u)
+            end
           end
+          {
+            "total_friends_count" => current_user.friends.count
+          }
+        end
+      end
+
+      resource :curated_friends do
+        desc "Return all friends"
+        params do
+          requires :token, type: String, desc: "Access token."
+        end
+        get do
+          authenticate!
+          current_user.curated_friends_list
         end
       end
     end
