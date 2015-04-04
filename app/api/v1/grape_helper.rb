@@ -9,12 +9,24 @@ module V1
       apikey ? apikey.destroy : false
     end
 
+    def update_fb_friends
+      @graph = Koala::Facebook::API.new(params[:oauth_token])
+      friends = @graph.get_connections("me", "friends")
+      
+      ActiveRecord::Base.transaction do
+        friends.each do |friend|
+          u = User.find_by(provider_id: friend["id"])
+          current_user.friends << u if u && !current_user.friends.exists?(u)
+        end
+      end
+    end
+
     def create_user_from_provider
       @graph = Koala::Facebook::API.new(params[:oauth_token])
 
       begin
         profile = @graph.get_object("me")
-        
+
         user = User.create( provider_id: profile["id"],
                             provider: "facebook",
                             email: profile["email"],

@@ -17,6 +17,7 @@ module V1
 
         if user
           if authenticated_with_provider
+            update_fb_friends
             key = ApiKey.create(user_id: user.id)
             {
               auth_token: key.access_token.to_s
