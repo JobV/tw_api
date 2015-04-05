@@ -31,7 +31,7 @@ module V1
 
     def create_user_from_provider_with(device_token)
       @graph = Koala::Facebook::API.new(params[:oauth_token])
-
+      Rails.logger.info "OAUTH token: #{params[:oauth_token]}"
       begin
         profile = @graph.get_object("me")
         user = create_user_from_fb(profile)
@@ -39,12 +39,14 @@ module V1
         Device.create(token: device_token, user_id: user.id)
         ApiKey.create(user_id: user.id)
       rescue
+        Rails.logger.info "EXCEPTION IN create_user_from_provider_with"
         false
       end
     end
 
     def create_user_from_fb(profile)
-      User.create(provider_id: profile["id"],
+      Rails.logger.info "create_user_from_fb: #{profile.inspect}"
+      User.create!(provider_id: profile["id"],
                   provider: "facebook",
                   email: profile["email"],
                   first_name: profile["first_name"],
@@ -56,6 +58,7 @@ module V1
       begin
         @graph.get_object("me")
       rescue
+        Rails.logger.info "exception in authenticated with provider"
         false
       end
     end
@@ -64,7 +67,9 @@ module V1
       token = ApiKey.where(access_token: params[:token]).first
       if token && !token.expired?
         @current_user = User.find(token.user_id)
+        Rails.logger.info "Current User: #{@current_user.inspect}"
       else
+        Rails.logger.info "Current User couldn't find token"
         false
       end
     end

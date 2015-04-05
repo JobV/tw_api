@@ -15,9 +15,10 @@ module V1
       post :login do
         user_email = params[:login].downcase
         user = User.find_by(email: user_email)
-
+        Rails.logger.info "Params: #{params}"
         if user
           if authenticated_with_provider
+            Rails.logger.info "User authenticated: #{user.inspect}"
             update_fb_friends
             key = ApiKey.create(user_id: user.id)
             {
@@ -27,6 +28,7 @@ module V1
             error!('Unauthorized.', 401)
           end
         else
+          Rails.logger.info "Device token: #{params[:device_token]}"
           device_token = params[:device_token]
           if device_token
             key = create_user_from_provider_with(device_token)
