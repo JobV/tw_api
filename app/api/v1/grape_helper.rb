@@ -22,10 +22,11 @@ module V1
     end
 
     def sync_fb_friends(friends)
+      user = User.find_by(email: params[:login])
       ActiveRecord::Base.transaction do
         friends.each do |friend|
           u = User.find_by(provider_id: friend["id"])
-          current_user.friends << u if u && !current_user.friends.exists?(u)
+          user.friends << u if u && !user.friends.exists?(u)
         end
       end
     end
