@@ -15,8 +15,7 @@ module V1
       begin
         friends = @graph.get_connections("me", "friends")
         sync_fb_friends(friends)
-      rescue
-        Exception => e
+      rescue Exception => e
           Rails.logger.info "update_fb_friends: #{e}"
         false
       end
