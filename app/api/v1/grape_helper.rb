@@ -38,14 +38,14 @@ module V1
 
         Device.create(token: device_token, user_id: user.id)
         ApiKey.create(user_id: user.id)
-      rescue
-        Rails.logger.info "EXCEPTION IN create_user_from_provider_with"
+      rescue Exception => e
+        Rails.logger.info "EXCEPTION IN create_user_from_provider_with: #{e}"
         false
       end
     end
 
     def create_user_from_fb(profile)
-      Rails.logger.info "create_user_from_fb: #{profile.inspect}"
+      Rails.logger.info "create_user_from_provider_with: #{profile.inspect}"
       User.create!(provider_id: profile["id"],
                   provider: "facebook",
                   email: profile["email"],
