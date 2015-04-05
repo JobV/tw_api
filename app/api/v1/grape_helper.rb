@@ -66,8 +66,8 @@ module V1
     def current_user
       token = ApiKey.where(access_token: params[:token]).first
       if token && !token.expired?
+        Rails.logger.info "Current User: #{User.find(token.user_id).inspect}"
         @current_user = User.find(token.user_id)
-        Rails.logger.info "Current User: #{@current_user.inspect}"
       else
         Rails.logger.info "Current User couldn't find token"
         false
