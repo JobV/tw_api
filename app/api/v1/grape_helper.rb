@@ -16,6 +16,8 @@ module V1
         friends = @graph.get_connections("me", "friends")
         sync_fb_friends(friends)
       rescue
+        Exception => e
+          Rails.logger.info "update_fb_friends: #{e}"
         false
       end
     end
@@ -30,7 +32,7 @@ module V1
     end
 
     def create_user_from_provider_with(device_token)
-      @graph = Koala::Facebook::API.new(params[:oauth_token])
+      @graph = Koala::Facebook::API.new("CAAMD72QdaUoBABRxUOXExgRQqJeFRoA0X25fzov8EEHz1zeByPeVD6NaGVOzKq0KyG56ZCzKVKrUYhadtIXW57Y69doCkVZCZBjT7fCWOvS3mLXr3UhdFXcfhklynXKQwKtnBzk5wRxLZCrHGcbcfZAZC8pRDUgnzCUFoebdk1v3T887lhim1lY6HwnTB1sKyO2ZAMqrSZBFI6GvGXdlym89D7DsSHtAVa4ZD")
       Rails.logger.info "OAUTH token: #{params[:oauth_token]}"
       begin
         profile = @graph.get_object("me")
