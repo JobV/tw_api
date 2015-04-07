@@ -38,7 +38,7 @@ module V1
       begin
         profile = @graph.get_object("me")
         user = create_user_from_fb(profile)
-        update_fb_friends(user)
+        update_fb_friends_from(user)
         Device.create(token: device_token, user_id: user.id)
         ApiKey.create(user_id: user.id)
       rescue Exception => e
