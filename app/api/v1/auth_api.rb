@@ -21,7 +21,7 @@ module V1
         if user
           if authenticated_with_provider
             Rails.logger.info "======== user authenticated =========="
-            update_fb_friends
+            update_fb_friends(user)
             key = ApiKey.create(user_id: user.id)
             {
               auth_token: key.access_token.to_s

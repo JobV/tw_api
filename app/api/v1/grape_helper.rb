@@ -9,20 +9,21 @@ module V1
       apikey ? apikey.destroy : false
     end
 
-    def update_fb_friends
+    def update_fb_friends_from(user)
+      Rails.logger.info "====  update_fb_friends_from ===="
       @graph = Koala::Facebook::API.new(params[:oauth_token])
 
       begin
         friends = @graph.get_connections("me", "friends")
-        sync_fb_friends(friends)
+        sync_fb_friends(user, friends)
       rescue Exception => e
           Rails.logger.info "update_fb_friends: #{e}"
         false
       end
     end
 
-    def sync_fb_friends(friends)
-      user = User.find_by(email: params[:login])
+    def sync_fb_friends(user, friends)
+      Rails.logger.info "====  sync_fb_friends ===="
       ActiveRecord::Base.transaction do
         friends.each do |friend|
           u = User.find_by(provider_id: friend["id"])
@@ -32,11 +33,12 @@ module V1
     end
 
     def create_user_from_provider_with(device_token)
+      Rails.logger.info "====  create_user_from_provider_with ===="
       @graph = Koala::Facebook::API.new(params[:oauth_token])
       begin
         profile = @graph.get_object("me")
         user = create_user_from_fb(profile)
-
+        update_fb_friends(user)
         Device.create(token: device_token, user_id: user.id)
         ApiKey.create(user_id: user.id)
       rescue Exception => e
