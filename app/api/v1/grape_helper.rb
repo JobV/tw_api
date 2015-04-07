@@ -32,7 +32,7 @@ module V1
     end
 
     def create_user_from_provider_with(device_token)
-      @graph = Koala::Facebook::API.new("CAAMD72QdaUoBABRxUOXExgRQqJeFRoA0X25fzov8EEHz1zeByPeVD6NaGVOzKq0KyG56ZCzKVKrUYhadtIXW57Y69doCkVZCZBjT7fCWOvS3mLXr3UhdFXcfhklynXKQwKtnBzk5wRxLZCrHGcbcfZAZC8pRDUgnzCUFoebdk1v3T887lhim1lY6HwnTB1sKyO2ZAMqrSZBFI6GvGXdlym89D7DsSHtAVa4ZD")
+      @graph = Koala::Facebook::API.new(params[:oauth_token])
       begin
         profile = @graph.get_object("me")
         user = create_user_from_fb(profile)
