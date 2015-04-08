@@ -86,8 +86,14 @@ module V1
     end
 
     def get_status_with_friend(user_id, friend_id)
-      meetup = MeetupRequest.where(user_id: user_id, friend_id: friend_id).last
-      reverse_meetup =  MeetupRequest.where(user_id: friend_id, friend_id: user_id).last
+      meetup = MeetupRequest.where(user_id: user_id,
+                                   friend_id: friend_id,
+                                   created_at: (Time.now - 1.hour)..Time.now)
+                                   .last
+      reverse_meetup = MeetupRequest.where(user_id: friend_id,
+                                           friend_id: user_id,
+                                           created_at: (Time.now - 1.hour)..Time.now)
+                                           .last
 
       if not_first_meeting(meetup, reverse_meetup)
         get_status_from_last_meetup(meetup, reverse_meetup)

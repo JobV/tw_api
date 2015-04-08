@@ -80,11 +80,13 @@ module V1
           created_at: (Time.now - 1.hour)..Time.now).last
 
           if meetup
-            meetup.status = 'declined'
-            if meetup.save
-              notify_refusal(params[:friend_id].to_i, current_user.id)
-            else
-              error! 'Access Denied'
+            if meetup.status != "declined"
+              meetup.status = 'declined'
+              if meetup.save
+                notify_refusal(params[:friend_id].to_i, current_user.id)
+              else
+                error! 'Access Denied'
+              end
             end
           else
             error! 'Access Denied', 404
@@ -101,11 +103,13 @@ module V1
           meetup = find_meetup(params[:friend_id], current_user.id)
 
           if meetup
-            meetup.status = 'terminated'
-            if meetup.save
-              notify_termination(params[:friend_id].to_i, current_user.id)
-            else
-              error! 'Access Denied'
+            if meetup.status != "terminated"
+              meetup.status = 'terminated'
+              if meetup.save
+                notify_termination(params[:friend_id].to_i, current_user.id)
+              else
+                error! 'Access Denied'
+              end
             end
           else
             error! 'Access Denied', 404

@@ -20,7 +20,7 @@ module ApnsHelper
       custom:            {  "friend_id"       => friend.id,
                             "first_name"      => friend.first_name,
                             "last_name"       => friend.last_name,
-                            "friend_phone_nr" => friend.phone_nr,
+                            "phone_nr" => friend.phone_nr,
                             "action"          => identifier },
       expiry:            1.hour    # optional; 0 is default, meaning the message is not stored
     )
