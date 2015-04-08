@@ -22,7 +22,7 @@ module V1
         get do
           authenticate!
           {
-            "received" => current_user.pending_meetup_requests_received
+            "meetups" => current_user.ongoing_meetups
           }
         end
 
