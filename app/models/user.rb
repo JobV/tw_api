@@ -49,6 +49,12 @@ class User < ActiveRecord::Base
     meetup_req.save
   end
 
+  def ongoing_meetups
+    meetups = MeetupRequest
+      .joins(:friendship)
+      .where("(friendships.friend_id = ? or friendships.user_id = ?) and status = ?", id, id, 1)
+  end
+
   def pending_meetup_requests_received
     meetups = MeetupRequest.joins(:friendship).where(friendships: { friend_id: id }, status: 0)
     meetups_response_format_for(meetups)
