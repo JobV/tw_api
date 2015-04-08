@@ -54,11 +54,13 @@ module V1
           created_at: (Time.now - 1.hour)..Time.now).last
 
           if meetup
-            meetup.status = 'accepted'
-            if meetup.save
-              notify_acceptance(params[:friend_id].to_i, current_user.id)
-            else
-              error! 'Access Denied', 403
+            if meetup != 'accepted'
+              meetup.status = 'accepted'
+              if meetup.save
+                notify_acceptance(params[:friend_id].to_i, current_user.id)
+              else
+                error! 'Access Denied', 403
+              end
             end
           else
             error! 'Access Denied', 404
