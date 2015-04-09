@@ -9,22 +9,22 @@ module V1
       apikey ? apikey.destroy : false
     end
 
-    def update_fb_friends
+    def update_fb_friends_from(user)
       @graph = Koala::Facebook::API.new(params[:oauth_token])
 
       begin
         friends = @graph.get_connections("me", "friends")
-        sync_fb_friends(friends)
+        sync_fb_friends(user, friends)
       rescue
         false
       end
     end
 
-    def sync_fb_friends(friends)
+    def sync_fb_friends(user, friends)
       ActiveRecord::Base.transaction do
         friends.each do |friend|
           u = User.find_by(provider_id: friend["id"])
-          current_user.friends << u if u && !current_user.friends.exists?(u)
+          user.friends << u if u && !user.friends.exists?(u)
         end
       end
     end
@@ -35,7 +35,7 @@ module V1
       begin
         profile = @graph.get_object("me")
         user = create_user_from_fb(profile)
-
+        update_fb_friends_from(user)
         Device.create(token: device_token, user_id: user.id)
         ApiKey.create(user_id: user.id)
       rescue
@@ -44,15 +44,16 @@ module V1
     end
 
     def create_user_from_fb(profile)
-      User.create(provider_id: profile["id"],
-                  provider: "facebook",
-                  email: profile["email"],
-                  first_name: profile["first_name"],
-                  last_name: profile["last_name"])
+      User.create!(provider_id: profile["id"],
+                   provider: "facebook",
+                   email: profile["email"],
+                   first_name: profile["first_name"],
+                   last_name: profile["last_name"])
     end
 
     def authenticated_with_provider
       @graph = Koala::Facebook::API.new(params[:oauth_token])
+
       begin
         @graph.get_object("me")
       rescue
@@ -78,14 +79,20 @@ module V1
     end
 
     def get_status_with_friend(user_id, friend_id)
-      meetup = MeetupRequest.where(user_id: user_id, friend_id: friend_id).last
-      reverse_meetup =  MeetupRequest.where(user_id: friend_id, friend_id: user_id).last
+      meetup = get_meetup_between(user_id, friend_id)
+      reverse_meetup = get_meetup_between(friend_id, user_id)
 
       if not_first_meeting(meetup, reverse_meetup)
         get_status_from_last_meetup(meetup, reverse_meetup)
       else
         "ready"
       end
+    end
+
+    def get_meetup_between(user_id, friend_id)
+      MeetupRequest.where(user_id: user_id,
+                          friend_id: friend_id,
+                          created_at: (Time.now - 1.hour)..Time.now).last
     end
 
     def get_status_from_last_meetup(meetup, reverse_meetup)

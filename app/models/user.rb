@@ -18,7 +18,6 @@ class User < ActiveRecord::Base
   has_many :inverse_friendships, class_name: 'Friendship', foreign_key: 'friend_id'
   has_many :inverse_friends, through: :inverse_friendships, source: :user
   has_many :devices, inverse_of: :user
-  validates :phone_nr, uniqueness: true
 
   def curated_friends_list
     friends.joins(:locations)
@@ -48,6 +47,12 @@ class User < ActiveRecord::Base
     meetup_req.friendship = friendship_with(user)
     meetup_req.pending!
     meetup_req.save
+  end
+
+  def ongoing_meetups
+    MeetupRequest
+      .joins(:friendship)
+      .where("(friendships.friend_id = ? or friendships.user_id = ?) and status = ?", id, id, 1)
   end
 
   def pending_meetup_requests_received

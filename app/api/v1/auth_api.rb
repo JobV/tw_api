@@ -15,10 +15,9 @@ module V1
       post :login do
         user_email = params[:login].downcase
         user = User.find_by(email: user_email)
-
         if user
           if authenticated_with_provider
-            update_fb_friends
+            update_fb_friends_from(user)
             key = ApiKey.create(user_id: user.id)
             {
               auth_token: key.access_token.to_s
