@@ -15,7 +15,7 @@ module V1
 
     resource :users do
       resource :meetups do
-        desc "Return received pending meetups"
+        desc "Return ongoing meetups"
         params do
           requires :token, type: String, desc: "Access token."
         end
@@ -105,11 +105,7 @@ module V1
           if meetup
             if meetup.status != "terminated"
               meetup.status = 'terminated'
-              if meetup.save
-                notify_termination(params[:friend_id].to_i, current_user.id)
-              else
-                error! 'Access Denied'
-              end
+              meetup.save ? notify_termination(params[:friend_id].to_i, current_user.id) : error!('Access Denied')
             end
           else
             error! 'Access Denied', 404

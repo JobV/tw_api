@@ -50,7 +50,7 @@ class User < ActiveRecord::Base
   end
 
   def ongoing_meetups
-    meetups = MeetupRequest
+    MeetupRequest
       .joins(:friendship)
       .where("(friendships.friend_id = ? or friendships.user_id = ?) and status = ?", id, id, 1)
   end

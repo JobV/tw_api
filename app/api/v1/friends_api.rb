@@ -14,7 +14,6 @@ module V1
         end
         get do
           authenticate!
-          puts current_user
           friends = current_user.friends.select(
           :first_name,
           :last_name,
