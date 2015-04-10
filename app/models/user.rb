@@ -52,7 +52,9 @@ class User < ActiveRecord::Base
   def ongoing_meetups
     MeetupRequest
       .joins(:friendship)
-      .where("(friendships.friend_id = ? or friendships.user_id = ?) and status = ?", id, id, 1)
+      .where("(friendships.friend_id = ? or friendships.user_id = ?)
+        and status = ?
+        and meetup_requests.created_at BETWEEN ? and ?", id, id, 1, (Time.now - 1.hour), Time.now)
   end
 
   def pending_meetup_requests_received
