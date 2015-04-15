@@ -71,7 +71,7 @@ module V1
     end
 
     def create_meetup(friendship)
-      meetup = get_meetup_between(friendship.user_id, friendship.friend_id)
+      meetup = get_ongoing_meetup_between(friendship.user_id, friendship.friend_id)
       return false if meetup
       meetup = MeetupRequest.create user_id: friendship.user_id,
                                     friend_id: friendship.friend_id,
@@ -95,6 +95,13 @@ module V1
       MeetupRequest.where(user_id: user_id,
                           friend_id: friend_id,
                           created_at: (Time.now - 1.hour)..Time.now).last
+    end
+
+    def get_ongoing_meetup_between(user_id, friend_id)
+      MeetupRequest
+        .where("friend_id = ? and user_id = ?
+          and (status = ? or status = ?)
+          and meetup_requests.created_at BETWEEN ? and ?", friend_id, user_id, 0, 1, (Time.now - 1.hour), Time.now).last
     end
 
     def get_status_from_last_meetup(meetup, reverse_meetup)
