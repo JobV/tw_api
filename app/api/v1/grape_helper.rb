@@ -71,6 +71,8 @@ module V1
     end
 
     def create_meetup(friendship)
+      meetup = get_meetup_between(friendship.user_id, friendship.friend_id)
+      return false if meetup
       meetup = MeetupRequest.create user_id: friendship.user_id,
                                     friend_id: friendship.friend_id,
                                     friendship: friendship
