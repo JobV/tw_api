@@ -53,6 +53,19 @@ RSpec.describe 'post /api/v1/users/meetups', type: :request do
     specify { expect(MeetupRequest.last.friend).to eq friend }
     specify { expect(MeetupRequest.last.user).to eq user }
   end
+
+  context 'request a duplicated meetup with friend' do
+    before do
+      token = create(:api_key, access_token: "12345678", expires_at: Date.tomorrow, user_id: user.id)
+
+      user.friends << friend
+      friend.devices << device
+      post "/api/v1/users/meetups", friend_id: friend.id, token: token.access_token
+      post "/api/v1/users/meetups", friend_id: friend.id, token: token.access_token
+    end
+    specify { expect(response.body).to eq 'false' }
+    specify { expect(MeetupRequest.count).to eq 1 }
+  end
 end
 
 RSpec.describe 'post /api/v1/users/meetups/accept', type: :request do
