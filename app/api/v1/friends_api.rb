@@ -19,7 +19,9 @@ module V1
           :last_name,
           :phone_nr,
           :id,
-          :email)
+          :email,
+          :provider,
+          :provider_id)
           returning_friends = []
           friends.each do |friend|
             returning_friends << {
@@ -28,7 +30,9 @@ module V1
               "phone_nr" => friend.phone_nr,
               "id" => friend.id,
               "email" => friend.email,
-              "status_with_friend" => get_status_with_friend(current_user.id, friend.id)
+              "status_with_friend" => get_status_with_friend(current_user.id, friend.id),
+              "provider" => friend.provider,
+              "provider_id" => friend.provider_id
             }
           end
           returning_friends
