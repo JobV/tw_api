@@ -5,9 +5,9 @@ RSpec.describe 'get /api/v1/users/friends', type: :request do
     let(:user) { create(:user) }
 
     before do
-      user.friends << create(:user, first_name: 'Marcelo')
-      user.friends << create(:user, first_name: 'Carla')
-      user.friends << create(:user, first_name: 'Job')
+      user.friends << create(:user, first_name: 'Marcelo', provider: 'facebook', provider_id: '123')
+      user.friends << create(:user, first_name: 'Carla', provider: 'facebook', provider_id: '456')
+      user.friends << create(:user, first_name: 'Job', provider: 'facebook', provider_id: '789')
       token = create(:api_key, access_token: "12345678", expires_at: Date.tomorrow, user_id: user.id)
 
       get "/api/v1/users/friends", token: token.access_token
@@ -20,6 +20,8 @@ RSpec.describe 'get /api/v1/users/friends', type: :request do
     end
 
     it 'returns the right attributes' do
+      expect(json[1]['provider']).to eq 'facebook'
+      expect(json[1]['provider_id']).to eq '456'
       expect(json[1]['last_name']).to eq 'Doe'
       expect(json[1]['first_name']).to be
     end
