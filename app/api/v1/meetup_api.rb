@@ -111,6 +111,22 @@ module V1
             error! 'Access Denied', 404
           end
         end
+
+        desc "Cancel a meetup"
+        params do
+          requires :friend_id, type: Integer, desc: "Friend id."
+          requires :token, type: String, desc: "Access token."
+        end
+        delete do
+          authenticate!
+          meetup = find_meetup(params[:friend_id], current_user.id)
+
+          return error!('Access Denied', 404) unless meetup
+          if meetup.status == "pending"
+            meetup.status = "cancelled"
+            error!('Access Denied') unless meetup.save
+          end
+        end
       end
     end
   end
