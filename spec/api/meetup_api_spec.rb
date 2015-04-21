@@ -181,3 +181,30 @@ RSpec.describe 'post /api/v1/users/:id/meetups/terminate', type: :request do
     specify { expect(response.code).to eq '404' }
   end
 end
+
+RSpec.describe 'delete /api/v1/users/:id/meetups', type: :request do
+  let(:user)   { create(:user) }
+  let(:friend) { create(:user, first_name: 'Rudolph') }
+
+  context 'cancel meetup with friend' do
+    before do
+      token = create(:api_key, access_token: "12345678", expires_at: Date.tomorrow, user_id: user.id)
+
+      user.friends << friend
+      MeetupRequest.create user_id: friend.id, friend_id: user.id, status: 'pending'
+      delete "/api/v1/users/meetups", friend_id: friend.id, token: token.access_token
+    end
+
+    specify { expect(response.code).to eq '200' }
+    specify { expect(MeetupRequest.last.status).to eq 'cancelled' }
+  end
+
+  context 'cancel non existing meetup request' do
+    before do
+      token = create(:api_key, access_token: "12345678", expires_at: Date.tomorrow, user_id: user.id)
+
+      delete "/api/v1/users/meetups", friend_id: 32, token: token.access_token
+    end
+    specify { expect(response.code).to eq '404' }
+  end
+end
