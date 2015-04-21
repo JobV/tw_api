@@ -53,17 +53,11 @@ module V1
           friend_id: current_user.id,
           created_at: (Time.now - 1.hour)..Time.now).last
 
-          if meetup
-            if meetup != 'accepted'
-              meetup.status = 'accepted'
-              if meetup.save
-                notify_acceptance(params[:friend_id].to_i, current_user.id)
-              else
-                error! 'Access Denied', 403
-              end
-            end
-          else
-            error! 'Access Denied', 404
+          return error!('Access Denied', 404) unless meetup
+          if meetup != 'accepted'
+            meetup.status = 'accepted'
+            return error!('Access Denied', 404) unless meetup.save
+            notify_acceptance(params[:friend_id].to_i, current_user.id)
           end
         end
 
@@ -79,17 +73,12 @@ module V1
           friend_id: current_user.id,
           created_at: (Time.now - 1.hour)..Time.now).last
 
-          if meetup
-            if meetup.status != "declined"
-              meetup.status = 'declined'
-              if meetup.save
-                notify_refusal(params[:friend_id].to_i, current_user.id)
-              else
-                error! 'Access Denied'
-              end
-            end
-          else
-            error! 'Access Denied', 404
+          return error!('Access Denied', 404) unless meetup
+          if meetup.status != "declined"
+            meetup.status = 'declined'
+
+            return error!('Access Denied', 404) unless meetup.save
+            notify_refusal(params[:friend_id].to_i, current_user.id)
           end
         end
 
@@ -102,13 +91,26 @@ module V1
           authenticate!
           meetup = find_meetup(params[:friend_id], current_user.id)
 
-          if meetup
-            if meetup.status != "terminated"
-              meetup.status = 'terminated'
-              meetup.save ? notify_termination(params[:friend_id].to_i, current_user.id) : error!('Access Denied')
-            end
-          else
-            error! 'Access Denied', 404
+          return error!('Access Denied', 404) unless meetup
+          if meetup.status != "terminated"
+            meetup.status = 'terminated'
+            meetup.save ? notify_termination(params[:friend_id].to_i, current_user.id) : error!('Access Denied')
+          end
+        end
+
+        desc "Cancel a meetup"
+        params do
+          requires :friend_id, type: Integer, desc: "Friend id."
+          requires :token, type: String, desc: "Access token."
+        end
+        delete do
+          authenticate!
+          meetup = find_meetup(params[:friend_id], current_user.id)
+
+          return error!('Access Denied', 404) unless meetup
+          if meetup.status == "pending"
+            meetup.status = "cancelled"
+            error!('Access Denied') unless meetup.save
           end
         end
       end
