@@ -6,7 +6,6 @@ class CreateDevices < ActiveRecord::Migration
       t.string :os
       t.integer :user_id
     end
-    add_index :devices, :token
-    add_index :devices, :user_id
+    add_index :devices, [:token, :user_id], :unique => true
   end
 end

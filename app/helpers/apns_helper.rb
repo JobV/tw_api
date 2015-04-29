@@ -55,22 +55,26 @@ module ApnsHelper
   end
 
   def send_meetup_notification_to(user, sender)
-    device = user.devices.last
-    push_request_notification(sender, device) if device
+    user.devices.each do |device|
+      push_request_notification(sender, device) if device
+    end
   end
 
   def send_acceptance_notification_to(user, sender)
-    device = user.devices.last
-    push_accepted_notification(sender, device) if device
+    user.devices.each do |device|
+      push_accepted_notification(sender, device) if device
+    end
   end
 
   def send_refusal_notification_to(user, sender)
-    device = user.devices.last
-    push_declined_notification(sender, device) if device
+    user.devices.each do |device|
+      push_declined_notification(sender, device) if device
+    end
   end
 
   def send_termination_notification_to(user, sender)
-    device = user.devices.last
-    push_termination_notification(sender, device) if device
+    user.devices.each do |device|
+      push_termination_notification(sender, device) if device
+    end
   end
 end
