@@ -4,9 +4,9 @@ module V1
       error!('Unauthorized. Invalid or expired token.', 401) unless current_user
     end
 
-    def mixpanel_event(event, properties)
+    def mixpanel_event(properties)
       tracker = Mixpanel::Tracker.new('6ae05520085a72b10108fbae93cad415')
-      tracker.track("user", event, properties)
+      tracker.track("user", "api", properties)
     end
 
     def logout
@@ -50,10 +50,10 @@ module V1
 
     def create_user_from_fb(profile)
       User.create!(provider_id: profile["id"],
-      provider: "facebook",
-      email: profile["email"],
-      first_name: profile["first_name"],
-      last_name: profile["last_name"])
+                   provider: "facebook",
+                   email: profile["email"],
+                   first_name: profile["first_name"],
+                   last_name: profile["last_name"])
     end
 
     def authenticated_with_provider
@@ -79,8 +79,8 @@ module V1
       meetup = get_ongoing_meetup_between(friendship.user_id, friendship.friend_id)
       return false if meetup
       meetup = MeetupRequest.create user_id: friendship.user_id,
-      friend_id: friendship.friend_id,
-      friendship: friendship
+                                    friend_id: friendship.friend_id,
+                                    friendship: friendship
       notify_friend(friendship.friend_id, friendship.user_id) if meetup
       meetup
     end
@@ -98,15 +98,15 @@ module V1
 
     def get_meetup_between(user_id, friend_id)
       MeetupRequest.where(user_id: user_id,
-      friend_id: friend_id,
-      created_at: (Time.now - 1.hour)..Time.now).last
+                          friend_id: friend_id,
+                          created_at: (Time.now - 1.hour)..Time.now).last
     end
 
     def get_ongoing_meetup_between(user_id, friend_id)
       MeetupRequest
-      .where("friend_id = ? and user_id = ?
-      and (status = ? or status = ?)
-      and meetup_requests.created_at BETWEEN ? and ?", friend_id, user_id, 0, 1, (Time.now - 1.hour), Time.now).last
+        .where("friend_id = ? and user_id = ?
+                and (status = ? or status = ?)
+                and meetup_requests.created_at BETWEEN ? and ?", friend_id, user_id, 0, 1, (Time.now - 1.hour), Time.now).last
     end
 
     def get_status_from_last_meetup(meetup, reverse_meetup)
