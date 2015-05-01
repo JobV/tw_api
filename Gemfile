@@ -36,6 +36,8 @@ gem 'activerecord-postgis-adapter'
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
+gem 'mixpanel-ruby'
+
 gem 'skylight'
 
 gem 'grocer'

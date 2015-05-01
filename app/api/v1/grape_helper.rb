@@ -4,6 +4,11 @@ module V1
       error!('Unauthorized. Invalid or expired token.', 401) unless current_user
     end
 
+    def mixpanel_event(properties)
+      tracker = Mixpanel::Tracker.new('6ae05520085a72b10108fbae93cad415')
+      tracker.track("user", "api", properties)
+    end
+
     def logout
       apikey = ApiKey.find_by(access_token: params[:token])
       apikey ? apikey.destroy : false
@@ -100,8 +105,8 @@ module V1
     def get_ongoing_meetup_between(user_id, friend_id)
       MeetupRequest
         .where("friend_id = ? and user_id = ?
-          and (status = ? or status = ?)
-          and meetup_requests.created_at BETWEEN ? and ?", friend_id, user_id, 0, 1, (Time.now - 1.hour), Time.now).last
+                and (status = ? or status = ?)
+                and meetup_requests.created_at BETWEEN ? and ?", friend_id, user_id, 0, 1, (Time.now - 1.hour), Time.now).last
     end
 
     def get_status_from_last_meetup(meetup, reverse_meetup)
