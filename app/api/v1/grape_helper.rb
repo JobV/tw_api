@@ -4,11 +4,6 @@ module V1
       error!('Unauthorized. Invalid or expired token.', 401) unless current_user
     end
 
-    def logout
-      apikey = ApiKey.find_by(access_token: params[:token])
-      apikey ? apikey.destroy : false
-    end
-
     def update_fb_friends_from(user)
       @graph = Koala::Facebook::API.new(params[:oauth_token])
 
@@ -26,38 +21,6 @@ module V1
           u = User.find_by(provider_id: friend["id"])
           user.friends << u if u && !user.friends.exists?(u)
         end
-      end
-    end
-
-    def create_user_from_provider_with(device_token)
-      @graph = Koala::Facebook::API.new(params[:oauth_token])
-
-      begin
-        profile = @graph.get_object("me")
-        user = create_user_from_fb(profile)
-        update_fb_friends_from(user)
-        Device.create(token: device_token, user_id: user.id)
-        ApiKey.create(user_id: user.id)
-      rescue
-        false
-      end
-    end
-
-    def create_user_from_fb(profile)
-      User.create!(provider_id: profile["id"],
-                   provider: "facebook",
-                   email: profile["email"],
-                   first_name: profile["first_name"],
-                   last_name: profile["last_name"])
-    end
-
-    def authenticated_with_provider
-      @graph = Koala::Facebook::API.new(params[:oauth_token])
-
-      begin
-        @graph.get_object("me")
-      rescue
-        false
       end
     end
 

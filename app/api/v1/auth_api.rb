@@ -16,27 +16,9 @@ module V1
         user_email = params[:login].downcase
         user = User.find_by(email: user_email)
         if user
-          if authenticated_with_provider
-            MixPanelService.register_login
-            update_fb_friends_from(user)
-            key = ApiKey.create(user_id: user.id)
-            {
-              auth_token: key.access_token.to_s
-            }
-          else
-            error!('Unauthorized.', 401)
-          end
+          AuthenticationService.authenticate_user
         else
-          device_token = params[:device_token]
-          if device_token
-            MixPanelService.register_user_creation
-            key = create_user_from_provider_with(device_token)
-            {
-              auth_token: key.access_token.to_s
-            }
-          else
-            error!('Unauthorized.', 401)
-          end
+          RegistrationService.create_user
         end
       end
 
@@ -45,16 +27,7 @@ module V1
         requires :token, type: String, desc: "Access token."
       end
       delete :logout do
-        if logout
-          MixPanelService.register_logout
-          {
-            success: "logout was successful"
-          }
-        else
-          {
-            error: "logout was unsuccessful"
-          }
-        end
+        AuthenticationService.logout_user
       end
     end
   end
