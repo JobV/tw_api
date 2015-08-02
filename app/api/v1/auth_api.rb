@@ -17,8 +17,7 @@ module V1
         user = User.find_by(email: user_email)
         if user
           if authenticated_with_provider
-            properties = { action: "login", controller: "auth" }
-            mixpanel_event(properties)
+            MixPanelService.register_login
             update_fb_friends_from(user)
             key = ApiKey.create(user_id: user.id)
             {
@@ -30,8 +29,7 @@ module V1
         else
           device_token = params[:device_token]
           if device_token
-            properties = { action: "create_user", controller: "auth" }
-            mixpanel_event(properties)
+            MixPanelService.register_user_creation
             key = create_user_from_provider_with(device_token)
             {
               auth_token: key.access_token.to_s
@@ -48,8 +46,7 @@ module V1
       end
       delete :logout do
         if logout
-          properties = { action: "logout", controller: "auth" }
-          mixpanel_event(properties)
+          MixPanelService.register_logout
           {
             success: "logout was successful"
           }

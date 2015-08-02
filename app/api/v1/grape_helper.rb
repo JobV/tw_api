@@ -4,11 +4,6 @@ module V1
       error!('Unauthorized. Invalid or expired token.', 401) unless current_user
     end
 
-    def mixpanel_event(properties)
-      tracker = Mixpanel::Tracker.new('6ae05520085a72b10108fbae93cad415')
-      tracker.track("user", "api", properties)
-    end
-
     def logout
       apikey = ApiKey.find_by(access_token: params[:token])
       apikey ? apikey.destroy : false
