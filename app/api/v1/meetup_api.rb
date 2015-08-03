@@ -48,10 +48,9 @@ module V1
         end
         post '/accept' do
           authenticate!
-          meetup = MeetupRequest.where(
-          user_id: params[:friend_id],
-          friend_id: current_user.id,
-          created_at: (Time.now - 1.hour)..Time.now).last
+          meetup = MeetupRequest.where(user_id: params[:friend_id],
+                                       friend_id: current_user.id,
+                                       created_at: (Time.now - 1.hour)..Time.now).last
 
           return error!('Access Denied', 404) unless meetup
           if meetup != 'accepted'
@@ -68,10 +67,9 @@ module V1
         end
         post '/decline' do
           authenticate!
-          meetup = MeetupRequest.where(
-          user_id: params[:friend_id],
-          friend_id: current_user.id,
-          created_at: (Time.now - 1.hour)..Time.now).last
+          meetup = MeetupRequest.where(user_id: params[:friend_id],
+                                       friend_id: current_user.id,
+                                       created_at: (Time.now - 1.hour)..Time.now).last
 
           return error!('Access Denied', 404) unless meetup
           if meetup.status != "declined"

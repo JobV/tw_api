@@ -8,35 +8,20 @@ module V1
     resource :auth do
       desc "Creates and returns access_token if valid login, creates new user if new credentials"
       params do
-        requires :login, type: String, desc: "Username or email address"
+        requires :login, type: String, desc: "provider id"
         requires :oauth_token, type: String, desc: "OAuth Token"
         requires :device_token, type: String, desc: "device token"
       end
       post :login do
-        user_email = params[:login].downcase
-        user = User.find_by(email: user_email)
+        user_provider_id = params[:login].downcase
+        user = User.find_by(provider_id: user_provider_id)
+
         if user
-          if authenticated_with_provider
-            properties = { action: "login", controller: "auth" }
-            mixpanel_event(properties)
-            update_fb_friends_from(user)
-            key = ApiKey.create(user_id: user.id)
-            {
-              auth_token: key.access_token.to_s
-            }
-          else
+          unless AuthenticationService.authenticate_user_with(params)
             error!('Unauthorized.', 401)
           end
         else
-          device_token = params[:device_token]
-          if device_token
-            properties = { action: "create_user", controller: "auth" }
-            mixpanel_event(properties)
-            key = create_user_from_provider_with(device_token)
-            {
-              auth_token: key.access_token.to_s
-            }
-          else
+          unless RegistrationService.create_user_with(params)
             error!('Unauthorized.', 401)
           end
         end
@@ -47,16 +32,11 @@ module V1
         requires :token, type: String, desc: "Access token."
       end
       delete :logout do
-        if logout
-          properties = { action: "logout", controller: "auth" }
-          mixpanel_event(properties)
-          {
-            success: "logout was successful"
-          }
+        token = params[:token]
+        if token
+          AuthenticationService.logout_with_token(token)
         else
-          {
-            error: "logout was unsuccessful"
-          }
+          error!('Unauthorized.', 401)
         end
       end
     end

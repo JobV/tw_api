@@ -36,8 +36,7 @@ ActiveRecord::Schema.define(version: 20150403192742) do
     t.integer "user_id"
   end
 
-  add_index "devices", ["token"], :name => "index_devices_on_token"
-  add_index "devices", ["user_id"], :name => "index_devices_on_user_id"
+  add_index "devices", ["token", "user_id"], :name => "index_devices_on_token_and_user_id", :unique => true
 
   create_table "friendships", force: true do |t|
     t.integer  "user_id"
