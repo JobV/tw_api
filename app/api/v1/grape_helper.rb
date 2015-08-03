@@ -4,17 +4,6 @@ module V1
       error!('Unauthorized. Invalid or expired token.', 401) unless current_user
     end
 
-    def update_fb_friends_from(user)
-      @graph = Koala::Facebook::API.new(params[:oauth_token])
-
-      begin
-        friends = @graph.get_connections("me", "friends")
-        sync_fb_friends(user, friends)
-      rescue
-        false
-      end
-    end
-
     def sync_fb_friends(user, friends)
       ActiveRecord::Base.transaction do
         friends.each do |friend|
