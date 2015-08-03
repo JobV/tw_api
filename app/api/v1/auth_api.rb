@@ -8,17 +8,22 @@ module V1
     resource :auth do
       desc "Creates and returns access_token if valid login, creates new user if new credentials"
       params do
-        requires :login, type: String, desc: "Username or email address"
+        requires :login, type: String, desc: "provider id"
         requires :oauth_token, type: String, desc: "OAuth Token"
         requires :device_token, type: String, desc: "device token"
       end
       post :login do
-        user_email = params[:login].downcase
-        user = User.find_by(email: user_email)
+        user_provider_id = params[:login].downcase
+        user = User.find_by(provider_id: user_provider_id)
+
         if user
-          AuthenticationService.authenticate_user
+          unless AuthenticationService.authenticate_user_with(params)
+            error!('Unauthorized.', 401)
+          end
         else
-          RegistrationService.create_user
+          unless RegistrationService.create_user_with(params)
+            error!('Unauthorized.', 401)
+          end
         end
       end
 
@@ -27,7 +32,12 @@ module V1
         requires :token, type: String, desc: "Access token."
       end
       delete :logout do
-        AuthenticationService.logout_user
+        token = params[:token]
+        if token
+          AuthenticationService.logout_with_token(token)
+        else
+          error!('Unauthorized.', 401)
+        end
       end
     end
   end
