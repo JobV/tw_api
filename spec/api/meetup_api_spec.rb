@@ -31,7 +31,7 @@ RSpec.describe 'post /api/v1/users/meetups', type: :request do
 
   context 'create meetup with non-friend' do
     before do
-      token = create(:api_key, access_token: "12345678", expires_at: Date.tomorrow, user_id: user.id)
+      token = create(:api_key, expires_at: Date.tomorrow, user_id: user.id)
 
       post "/api/v1/users/meetups", friend_id: friend.id, token: token.access_token
     end
@@ -41,13 +41,14 @@ RSpec.describe 'post /api/v1/users/meetups', type: :request do
 
   context 'request meetup with friend' do
     before do
-      token = create(:api_key, access_token: "12345678", expires_at: Date.tomorrow, user_id: user.id)
+      token = create(:api_key, expires_at: Date.tomorrow, user_id: user.id)
 
       user.friends << friend
       friend.devices << device
 
       post "/api/v1/users/meetups", friend_id: friend.id, token: token.access_token
     end
+
     specify { expect(response.code).to eq '201' }
     specify { expect(MeetupRequest.last.status).to eq 'pending' }
     specify { expect(MeetupRequest.last.friend).to eq friend }
