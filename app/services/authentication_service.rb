@@ -1,35 +1,31 @@
 class AuthenticationService
   class << self
-    def authenticate_user
-      if authenticated_with_provider
-        MixPanelService.register_login
-        update_fb_friends_from(user)
-        key = ApiKey.create(user_id: user.id)
-        {
-          auth_token: key.access_token.to_s
-        }
-      else
-        error!('Unauthorized.', 401)
-      end
+    def authenticate_user_with(params)
+      oauth_token = params[:oauth_token]
+      return unless oauth_token
+      return false unless authenticated_with_provider(oauth_token)
+
+      MixpanelService.register_login
+
+      update_fb_friends_from(user, oauth_token)
+
+      key = ApiKey.create(user_id: user.id)
+      ReturnMessageService.auth_token_from key
     end
 
-    def logout_user
-      if logout
-        MixPanelService.register_logout
-        {
-          success: "logout was successful"
-        }
+    def logout_with_token(token)
+      if logout(token)
+        MixpanelService.register_logout
+        ReturnMessageService.successful_logout
       else
-        {
-          error: "logout was unsuccessful"
-        }
+        ReturnMessageService.unsuccessful_logout
       end
     end
 
     private
 
-    def authenticated_with_provider
-      @graph = Koala::Facebook::API.new(params[:oauth_token])
+    def authenticated_with_provider(oauth_token)
+      @graph = Koala::Facebook::API.new(oauth_token)
 
       begin
         @graph.get_object("me")
@@ -38,8 +34,19 @@ class AuthenticationService
       end
     end
 
-    def logout
-      apikey = ApiKey.find_by(access_token: params[:token])
+    def update_fb_friends_from(user, oauth_token)
+      @graph = Koala::Facebook::API.new(oauth_token)
+
+      begin
+        friends = @graph.get_connections("me", "friends")
+        sync_fb_friends(user, friends)
+      rescue
+        false
+      end
+    end
+
+    def logout(token)
+      apikey = ApiKey.find_by(access_token: token)
       apikey ? apikey.destroy : false
     end
   end

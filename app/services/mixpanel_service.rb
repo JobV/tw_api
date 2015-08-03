@@ -1,4 +1,4 @@
-class MixPanelService
+class MixpanelService
   class << self
     def register_login
       properties = { action: "login", controller: "auth" }
