@@ -7,11 +7,9 @@ class AuthenticationService
 
       MixpanelService.register_login
 
-      update_fb_friends_from(user, oauth_token)
+      FacebookService.update_fb_friends_from(user, oauth_token)
 
-      key = ApiKey.create(user_id: user.id)
-      
-      ReturnMessageService.auth_token_from key
+      ApiKey.create(user_id: user.id)
     end
 
     def logout_with_token(token)
@@ -30,17 +28,6 @@ class AuthenticationService
 
       begin
         @graph.get_object("me")
-      rescue
-        false
-      end
-    end
-
-    def update_fb_friends_from(user, oauth_token)
-      @graph = Koala::Facebook::API.new(oauth_token)
-
-      begin
-        friends = @graph.get_connections("me", "friends")
-        sync_fb_friends(user, friends)
       rescue
         false
       end

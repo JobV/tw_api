@@ -7,8 +7,7 @@ class RegistrationService
 
       MixpanelService.register_user_creation
 
-      key = create_user_from_provider_with(device_token, oauth_token)
-      ReturnMessageService.auth_token_from key
+      create_user_from_provider_with(device_token, oauth_token)
     end
 
     private
@@ -27,7 +26,9 @@ class RegistrationService
       begin
         profile = @graph.get_object("me")
         user = create_user_from_fb(profile)
-        update_fb_friends_from(user)
+        
+        FacebookService.update_fb_friends_from(user, oauth_token)
+
         Device.create(token: device_token, user_id: user.id)
         ApiKey.create(user_id: user.id)
       rescue

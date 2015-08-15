@@ -15,18 +15,15 @@ module V1
       post :login do
         user_provider_id = params[:login].downcase
         user = User.find_by(provider_id: user_provider_id)
+        key = {}
 
         if user
-          unless response = AuthenticationService.authenticate_user_with(user, params)
-            error!('Unauthorized.', 401)
-          end
+          key = AuthenticationService.authenticate_user_with(user, params)
         else
-          unless response = RegistrationService.create_user_with(params)
-            error!('Unauthorized.', 401)
-          end
+          key = RegistrationService.create_user_with(params)
         end
-
-        response
+        
+        key ? ReturnMessageService.auth_token_from(key) : error!('Unauthorized.', 401)
       end
 
       desc "Destroys login token"
