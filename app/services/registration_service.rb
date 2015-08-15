@@ -26,7 +26,7 @@ class RegistrationService
       begin
         profile = @graph.get_object("me")
         user = create_user_from_fb(profile)
-        
+
         FacebookService.update_fb_friends_from(user, oauth_token)
 
         Device.create(token: device_token, user_id: user.id)

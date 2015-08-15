@@ -22,7 +22,7 @@ module V1
         else
           key = RegistrationService.create_user_with(params)
         end
-        
+
         key ? ReturnMessageService.auth_token_from(key) : error!('Unauthorized.', 401)
       end
 
