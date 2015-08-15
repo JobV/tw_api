@@ -45,6 +45,7 @@ gem 'grocer'
 gem "koala", "~> 1.11.0rc"
 
 group :development do
+  gem 'pry'
   gem 'annotate' # annotate models
   gem 'guard-rspec', require: false
   gem 'guard-rubocop', require: false
