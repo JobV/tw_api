@@ -17,7 +17,7 @@ module V1
         user = User.find_by(provider_id: user_provider_id)
 
         if user
-          unless AuthenticationService.authenticate_user_with(params)
+          unless AuthenticationService.authenticate_user_with(user, params)
             error!('Unauthorized.', 401)
           end
         else

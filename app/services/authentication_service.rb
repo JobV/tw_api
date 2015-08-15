@@ -1,6 +1,6 @@
 class AuthenticationService
   class << self
-    def authenticate_user_with(params)
+    def authenticate_user_with(user, params)
       oauth_token = params[:oauth_token]
       return unless oauth_token
       return false unless authenticated_with_provider(oauth_token)
