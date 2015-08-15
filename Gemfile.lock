@@ -246,6 +246,7 @@ DEPENDENCIES
   koala (~> 1.11.0rc)
   mixpanel-ruby
   pg
+  pry
   rails (= 4.1.8)
   rspec-rails
   rubocop
