@@ -10,6 +10,7 @@ class AuthenticationService
       update_fb_friends_from(user, oauth_token)
 
       key = ApiKey.create(user_id: user.id)
+      
       ReturnMessageService.auth_token_from key
     end
 

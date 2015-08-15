@@ -17,14 +17,16 @@ module V1
         user = User.find_by(provider_id: user_provider_id)
 
         if user
-          unless AuthenticationService.authenticate_user_with(user, params)
+          unless response = AuthenticationService.authenticate_user_with(user, params)
             error!('Unauthorized.', 401)
           end
         else
-          unless RegistrationService.create_user_with(params)
+          unless response = RegistrationService.create_user_with(params)
             error!('Unauthorized.', 401)
           end
         end
+
+        response
       end
 
       desc "Destroys login token"
